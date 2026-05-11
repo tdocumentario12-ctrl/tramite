@@ -1,0 +1,396 @@
+/* ============================================
+   SISTEMA SIS — Gestión de Usuarios (MD3 Style)
+   ============================================ */
+
+.usuarios-container {
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Cabecera ── */
+.usuarios-cabecera {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: var(--espacio-xl);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.cabecera-info h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-texto);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.cabecera-subtitulo {
+  color: var(--color-texto-secundario);
+  font-size: var(--fuente-sm);
+  margin-top: 4px;
+}
+
+.btn-nuevo-usuario {
+  background: var(--color-primario);
+  color: white;
+  border-radius: var(--radio-lg);
+  padding: 12px 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: var(--fuente-sm);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.15);
+}
+
+.btn-nuevo-usuario:hover {
+  background: var(--color-primario-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.25);
+}
+
+.btn-nuevo-usuario svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ── Tabla MD Style ── */
+.tabla-contenedor {
+  background: white;
+  border-radius: 24px;
+  border: 1px solid var(--color-borde);
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.tabla-usuarios th {
+  background: #F8FAFC;
+  padding: 16px 20px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--color-texto-secundario);
+  border-bottom: 1px solid var(--color-borde);
+}
+
+.tabla-usuarios td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #F1F5F9;
+  vertical-align: middle;
+}
+
+.tabla-usuarios tr:hover td {
+  background-color: var(--color-primario-ultra-light);
+}
+
+.modal-overlay {
+  display: none;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  background: rgba(15, 23, 42, 0.6) !important; /* Scrim de Material Design */
+  backdrop-filter: blur(4px);
+  z-index: 9999 !important;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal-overlay.visible {
+  display: flex !important;
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.md-modal {
+  background: white;
+  border-radius: 28px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalSlideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalSlideUp {
+  from { transform: translateY(20px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.modal-header-md {
+  padding: 32px 32px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  position: relative;
+}
+
+.header-icon-md {
+  width: 48px;
+  height: 48px;
+  background: var(--color-primario-light);
+  color: var(--color-primario);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-icon-md svg {
+  width: 24px;
+  height: 24px;
+}
+
+.header-text-md h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-texto);
+  margin-bottom: 4px;
+}
+
+.header-text-md p {
+  color: var(--color-texto-secundario);
+  font-size: var(--fuente-sm);
+}
+
+.btn-icon-md {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-texto-terciario);
+  transition: background 0.2s;
+}
+
+.btn-icon-md:hover {
+  background: #F1F5F9;
+  color: var(--color-texto);
+}
+
+/* ── Formulario MD3 (Outlined Fields) ── */
+.modal-body-md {
+  padding: 16px 32px 32px;
+}
+
+.md-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px 16px;
+}
+
+.md-field.full {
+  grid-column: span 2;
+}
+
+.md-field {
+  position: relative;
+  padding-top: 8px;
+}
+
+.md-input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1rem;
+  color: var(--color-texto);
+  background: transparent;
+  border: 1px solid var(--color-texto-terciario);
+  border-radius: 12px;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.md-input:focus {
+  border: 2px solid var(--color-primario);
+  padding: 13px 15px; /* Compensa el borde de 2px */
+  outline: none;
+}
+
+.md-label {
+  position: absolute;
+  left: 12px;
+  top: 22px;
+  padding: 0 4px;
+  background: white;
+  color: var(--color-texto-secundario);
+  font-size: 1rem;
+  transition: all 0.2s;
+  pointer-events: none;
+}
+
+/* Efecto Floating Label */
+.md-input:focus + .md-label,
+.md-input:not(:placeholder-shown) + .md-label {
+  top: 0;
+  left: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primario);
+}
+
+.md-input:not(:focus) + .md-label {
+  color: var(--color-texto-secundario);
+}
+
+.md-helper {
+  display: block;
+  margin-top: 4px;
+  margin-left: 12px;
+  font-size: 0.7rem;
+  color: var(--color-texto-terciario);
+}
+
+/* Estilo para Select */
+select.md-input {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 40px;
+}
+
+/* ── Footer del Modal MD3 ── */
+.modal-footer-md {
+  padding: 16px 32px 32px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  background: #F8FAFC;
+}
+
+.btn-text-md {
+  padding: 10px 24px;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: var(--fuente-sm);
+  color: var(--color-primario);
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.btn-text-md:hover {
+  background: var(--color-primario-ultra-light);
+}
+
+.btn-filled-md {
+  padding: 10px 28px;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: var(--fuente-sm);
+  color: white;
+  background: var(--color-primario);
+  box-shadow: var(--sombra-sm);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-filled-md:hover:not(:disabled) {
+  background: var(--color-primario-hover);
+  box-shadow: var(--sombra-md);
+  transform: translateY(-1px);
+}
+
+.btn-filled-md:disabled {
+  background: #CBD5E1;
+  cursor: not-allowed;
+}
+
+/* ── Badges y Acciones ── */
+.badge-rol {
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge-rol.administrador { background: #F0F9FF; color: #0369A1; }
+.badge-rol.operador { background: #FFF7ED; color: #9A3412; }
+
+.badge-estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.badge-estado.activo { background: #F0FDF4; color: #166534; }
+.badge-estado.inactivo { background: #FEF2F2; color: #991B1B; }
+
+.badge-estado-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.btn-accion {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid var(--color-borde);
+  background: white;
+  color: var(--color-texto-secundario);
+  transition: all 0.2s;
+}
+
+.btn-accion:hover {
+  background: var(--color-primario-ultra-light);
+  color: var(--color-primario);
+  border-color: var(--color-primario);
+}
+
+.btn-accion.peligro:hover {
+  background: #FEF2F2;
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .usuarios-cabecera {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .btn-nuevo-usuario {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .md-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .md-field.full {
+    grid-column: span 1;
+  }
+
+  .modal-footer-md {
+    flex-direction: column-reverse;
+  }
+  
+  .btn-text-md, .btn-filled-md {
+    width: 100%;
+    justify-content: center;
+  }
+}

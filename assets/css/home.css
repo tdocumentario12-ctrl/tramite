@@ -1,0 +1,304 @@
+/* ============================================
+   SISTEMA SIS — Panel Principal (Home)
+   ============================================ */
+
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--color-fondo);
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: var(--sidebar-ancho);
+  min-height: 100vh;
+  background: var(--sidebar-bg);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: var(--z-sidebar);
+  transition: transform var(--transicion-normal), width var(--transicion-normal);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Cabecera del sidebar (logo + nombre) */
+.sidebar-cabecera {
+  padding: var(--espacio-lg) var(--espacio-md);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sidebar-logo {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  border-radius: var(--radio-md);
+  flex-shrink: 0;
+}
+
+.sidebar-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidebar-titulo {
+  font-size: var(--fuente-sm);
+  font-weight: 800;
+  color: var(--sidebar-texto-activo);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.sidebar-subtitulo {
+  font-size: var(--fuente-xs);
+  color: var(--sidebar-texto);
+  white-space: nowrap;
+  opacity: 0.8;
+}
+
+/* Línea divisora */
+.sidebar-divisor {
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  margin: 0 var(--espacio-md);
+}
+
+/* Navegación */
+.sidebar-nav {
+  flex: 1;
+  padding: var(--espacio-md) 0;
+}
+
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 0 var(--espacio-sm);
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  border-radius: var(--radio-md);
+  color: var(--sidebar-texto);
+  font-size: var(--fuente-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background var(--transicion-rapida), color var(--transicion-rapida);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.sidebar-item:hover {
+  background: var(--sidebar-hover);
+  color: var(--sidebar-texto-activo);
+}
+
+.sidebar-item.activo {
+  background: var(--sidebar-activo);
+  color: var(--sidebar-texto-activo);
+  font-weight: 600;
+}
+
+.sidebar-item.activo::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 3px;
+  height: 28px;
+  background: var(--color-primario);
+  border-radius: 0 3px 3px 0;
+}
+
+.sidebar-item svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+.sidebar-item.activo svg,
+.sidebar-item:hover svg {
+  opacity: 1;
+}
+
+/* Pie del sidebar */
+.sidebar-pie {
+  padding: var(--espacio-md);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-cerrar-sesion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  border-radius: var(--radio-md);
+  color: var(--sidebar-texto);
+  font-size: var(--fuente-sm);
+  font-weight: 500;
+  width: 100%;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background var(--transicion-rapida), color var(--transicion-rapida);
+}
+
+.sidebar-cerrar-sesion:hover {
+  background: rgba(220, 38, 38, 0.15);
+  color: #FCA5A5;
+}
+
+.sidebar-cerrar-sesion svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+/* ── Contenido Principal ── */
+.contenido-principal {
+  flex: 1;
+  margin-left: var(--sidebar-ancho);
+  min-height: 100vh;
+  transition: margin-left var(--transicion-normal);
+  min-width: 0; /* CRÍTICO: Permite que el contenido flex se encoja */
+  width: calc(100% - var(--sidebar-ancho));
+}
+
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+.contenido-header {
+  background: var(--color-blanco);
+  border-bottom: 1px solid var(--color-borde);
+  padding: 16px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+}
+
+.contenido-header-izq {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btn-menu-movil {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--color-texto);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radio-sm);
+  transition: background var(--transicion-rapida);
+}
+
+.btn-menu-movil:hover {
+  background: var(--color-fondo);
+}
+
+.btn-menu-movil svg {
+  width: 24px;
+  height: 24px;
+}
+
+.contenido-titulo-pagina {
+  font-size: var(--fuente-lg);
+  font-weight: 700;
+  color: var(--color-texto);
+}
+
+.contenido-usuario-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--fuente-sm);
+  color: var(--color-texto-secundario);
+}
+
+.contenido-usuario-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radio-full);
+  background: var(--color-primario);
+  color: var(--color-blanco);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: var(--fuente-sm);
+}
+
+.contenido-area {
+  padding: 28px;
+}
+
+/* ── Overlay móvil para sidebar ── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: calc(var(--z-sidebar) - 1);
+  opacity: 0;
+  transition: opacity var(--transicion-normal);
+}
+
+.sidebar-overlay.visible {
+  opacity: 1;
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.abierto {
+    transform: translateX(0);
+  }
+
+  .contenido-principal {
+    margin-left: 0;
+  }
+
+  .btn-menu-movil {
+    display: flex;
+  }
+
+  .sidebar-overlay {
+    display: block;
+  }
+}
+
+@media (max-width: 640px) {
+  .contenido-header {
+    padding: 12px 16px;
+  }
+
+  .contenido-area {
+    padding: 16px;
+  }
+
+  .contenido-titulo-pagina {
+    font-size: var(--fuente-base);
+  }
+
+  .contenido-usuario-info span {
+    display: none;
+  }
+}
