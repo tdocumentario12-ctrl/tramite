@@ -377,3 +377,358 @@
   from { opacity: 0; }
   to { opacity: 1; }
 }
+
+
+/* ── Modales y Componentes MD3 (Portados de SIS) ── */
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: var(--z-modal-overlay);
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.modal-overlay.visible {
+  display: flex !important;
+}
+
+.md-modal {
+  background: white;
+  border-radius: 28px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: modalSlideUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes modalSlideUp {
+  from { transform: translateY(20px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.modal-header-md {
+  padding: 32px 32px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  position: relative;
+}
+
+.header-icon-md {
+  width: 48px;
+  height: 48px;
+  background: var(--color-primario-light);
+  color: var(--color-primario);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-icon-md svg {
+  width: 24px;
+  height: 24px;
+}
+
+.header-text-md h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-texto);
+  margin-bottom: 4px;
+}
+
+.header-text-md p {
+  color: var(--color-texto-secundario);
+  font-size: var(--fuente-sm);
+}
+
+.btn-icon-md {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-texto-terciario);
+  transition: background 0.2s;
+}
+
+.btn-icon-md:hover {
+  background: #F1F5F9;
+  color: var(--color-texto);
+}
+
+.modal-body-md {
+  padding: 16px 32px 32px;
+}
+
+.md-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px 16px;
+}
+
+.md-field.full {
+  grid-column: span 2;
+}
+
+.md-field {
+  position: relative;
+  padding-top: 8px;
+}
+
+.md-input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 1rem;
+  color: var(--color-texto);
+  background: transparent;
+  border: 1px solid var(--color-texto-terciario);
+  border-radius: 12px;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.md-input:focus {
+  border: 2px solid var(--color-primario);
+  padding: 13px 15px;
+  outline: none;
+}
+
+.md-label {
+  position: absolute;
+  left: 12px;
+  top: 22px;
+  padding: 0 4px;
+  background: white;
+  color: var(--color-texto-secundario);
+  font-size: 1rem;
+  transition: all 0.2s;
+  pointer-events: none;
+}
+
+.md-input:focus + .md-label,
+.md-input:not(:placeholder-shown) + .md-label {
+  top: 0;
+  left: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primario);
+}
+
+.md-helper {
+  display: block;
+  margin-top: 4px;
+  margin-left: 12px;
+  font-size: 0.7rem;
+  color: var(--color-texto-terciario);
+}
+
+.modal-footer-md {
+  padding: 16px 32px 32px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  background: #F8FAFC;
+}
+
+.btn-text-md {
+  padding: 10px 24px;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: var(--fuente-sm);
+  color: var(--color-primario);
+  background: transparent;
+  transition: background 0.2s;
+}
+
+.btn-text-md:hover {
+  background: var(--color-primario-ultra-light);
+}
+
+.btn-filled-md {
+  padding: 10px 28px;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: var(--fuente-sm);
+  color: white;
+  background: var(--color-primario);
+  box-shadow: var(--sombra-sm);
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-filled-md:hover:not(:disabled) {
+  background: var(--color-primario-hover);
+  box-shadow: var(--sombra-md);
+  transform: translateY(-1px);
+}
+
+.btn-filled-md:disabled {
+  background: #CBD5E1;
+  cursor: not-allowed;
+}
+
+/* ── Estilos para Recuperación de Contraseña ── */
+
+.pasos-indicador {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.paso-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-borde);
+  transition: all 0.3s ease;
+}
+
+.paso-dot.activo {
+  background: var(--color-primario);
+  width: 24px;
+  border-radius: 4px;
+}
+
+.paso-dot.completado {
+  background: var(--color-exito);
+}
+
+.paso-descripcion {
+  text-align: center;
+  font-size: var(--fuente-sm);
+  color: var(--color-texto-secundario);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.otp-contenedor {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+.otp-casilla {
+  width: 42px;
+  height: 54px;
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border: 2px solid var(--color-borde);
+  border-radius: 12px;
+  background: var(--color-fondo);
+  transition: all 0.2s;
+}
+
+.otp-casilla:focus {
+  border-color: var(--color-primario);
+  background: white;
+  box-shadow: 0 0 0 4px var(--color-primario-ultra-light);
+  outline: none;
+}
+
+.otp-casilla.llena {
+  border-color: var(--color-exito);
+}
+
+.reenvio-contenedor {
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--color-texto-terciario);
+  margin-top: 12px;
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  color: var(--color-primario);
+  font-weight: 600;
+  cursor: pointer;
+  font-size: inherit;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.validacion-requisitos {
+  margin-top: 16px;
+  padding: 12px;
+  background: var(--color-fondo);
+  border-radius: 12px;
+  border: 1px solid var(--color-borde);
+}
+
+.requisito-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--color-texto-terciario);
+  margin-bottom: 4px;
+}
+
+.requisito-item svg {
+  width: 12px;
+  height: 12px;
+  opacity: 0.3;
+}
+
+.requisito-item.cumplido {
+  color: var(--color-exito);
+}
+
+.requisito-item.cumplido svg {
+  opacity: 1;
+}
+
+.mensaje-error-md {
+  color: var(--color-error);
+  font-size: 0.75rem;
+  text-align: center;
+  margin-top: 12px;
+  min-height: 1.2em;
+}
+
+.exito-animacion {
+  width: 64px;
+  height: 64px;
+  background: var(--color-exito-light);
+  color: var(--color-exito);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  animation: scaleIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.exito-animacion svg {
+  width: 32px;
+  height: 32px;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
