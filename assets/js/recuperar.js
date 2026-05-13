@@ -186,16 +186,34 @@ const Recuperacion = {
         const el = this.elements;
         const email = el.emailInput.value.trim();
 
+        // 1. Validar formato
         if (!email) return this.mostrarError('Ingresa tu correo electrónico.');
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return this.mostrarError('Correo inválido.');
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailRegex.test(email)) return this.mostrarError('El formato del correo es inválido.');
 
         this.setLoading(true);
+        this.limpiarError();
 
         try {
-            // Usamos clienteSupabase definido en config.js
-            const { error } = await clienteSupabase.auth.resetPasswordForEmail(email);
+            // 2. Verificar si el correo existe y el usuario está activo (public.perfiles)
+            const { data: usuario, error: errorBusqueda } = await clienteSupabase
+                .from('perfiles')
+                .select('id, activo')
+                .eq('gmail', email)
+                .single();
 
-            if (error) throw error;
+            if (errorBusqueda || !usuario) {
+                return this.mostrarError('El correo ingresado no se encuentra registrado.');
+            }
+
+            if (usuario.activo === false) {
+                return this.mostrarError('Esta cuenta se encuentra desactivada. Contacta al administrador.');
+            }
+
+            // 3. Si existe, enviar el código de recuperación vía Supabase Auth
+            const { error: errorAuth } = await clienteSupabase.auth.resetPasswordForEmail(email);
+
+            if (errorAuth) throw errorAuth;
 
             this.email = email;
             el.emailDestino.textContent = email;
@@ -209,8 +227,10 @@ const Recuperacion = {
             }
 
         } catch (err) {
-            console.error('Error enviando código:', err);
-            this.mostrarError(err.message.includes('rate limit') ? 'Demasiados intentos. Espera un momento.' : 'Error al enviar código.');
+            console.error('Error en flujo de recuperación:', err);
+            let mensaje = 'Error al procesar la solicitud.';
+            if (err.message.includes('rate limit')) mensaje = 'Demasiados intentos. Espera un momento.';
+            this.mostrarError(mensaje);
         } finally {
             this.setLoading(false);
         }

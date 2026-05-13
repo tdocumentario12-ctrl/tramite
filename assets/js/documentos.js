@@ -264,7 +264,7 @@ const Documentos = {
     `;
 
     document.getElementById('btn-descargar-det').onclick = () => {
-      if (doc.archivo_url) window.open(doc.archivo_url, '_blank');
+      if (doc.archivo_pdf) window.open(doc.archivo_pdf, '_blank');
       else Toast.error('No hay archivo adjunto');
     };
     document.getElementById('btn-generar-pdf-formal').onclick = () => this.generarNotaPDF(doc);

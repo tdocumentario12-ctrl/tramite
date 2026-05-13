@@ -341,22 +341,53 @@
 }
 
 /* ── Responsive ── */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .login-card-moderno {
     flex-direction: column;
-    max-width: 450px;
-    border-radius: 24px;
+    height: auto;
+    min-height: 100vh;
   }
   
-  .login-seccion-visual {
-    display: none; /* Ocultar panel visual en móvil para simplicidad */
+  .login-seccion-form {
+    padding: 60px 24px;
+    width: 100%;
+    order: 2;
   }
 
-  .login-seccion-form {
-    padding: 40px;
+  .login-seccion-visual {
+    flex: none;
+    height: 300px;
+    width: 100%;
+    border-radius: 0 0 50px 50px;
+    padding: 20px;
+    order: 1;
+  }
+
+  .visual-titulo { font-size: 2.5rem; }
+  .visual-texto { font-size: 1rem; }
+}
+
+@media (max-width: 640px) {
+  .login-titulo { font-size: 1.8rem; }
+  .login-seccion-visual { height: 200px; }
+  .visual-titulo { font-size: 1.8rem; }
+  .visual-texto { display: none; }
+  
+  .md-grid {
+    grid-template-columns: 1fr;
   }
   
-  .login-titulo { font-size: 1.8rem; }
+  .md-field.full {
+    grid-column: span 1;
+  }
+
+  .modal-footer-md {
+    flex-direction: column-reverse;
+  }
+
+  .btn-text-md, .btn-filled-md {
+    width: 100%;
+  }
 }
 
 /* Spinner custom */

@@ -361,6 +361,9 @@ const Tramites = {
       document.getElementById('d-prioridad-doc').value = data.prioridad;
       document.getElementById('d-asunto-doc').value = data.asunto;
       
+      // Guardar URL del archivo si existe para no perderlo al derivar
+      this._archivoPendienteDerivar = data.archivo_pdf;
+      
       Toast.info('Datos del documento cargados.');
       sessionStorage.removeItem('derivar_id');
     } catch (err) { console.error(err); }
@@ -433,10 +436,20 @@ const Tramites = {
       };
       if (this._archivoAdjunto) {
         const path = `tramites/${Date.now()}.pdf`;
-        await clienteSupabase.storage.from('documentos').upload(path, this._archivoAdjunto);
+        const { error: uploadError } = await clienteSupabase.storage.from('documentos').upload(path, this._archivoAdjunto);
+        
+        if (uploadError) {
+          console.error('Error subiendo archivo:', uploadError);
+          throw new Error('No se pudo subir el archivo PDF. Intente nuevamente.');
+        }
+
         tramite.archivo_url = clienteSupabase.storage.from('documentos').getPublicUrl(path).data.publicUrl;
       }
-      await clienteSupabase.from('tramites').insert(tramite);
+      
+      const { error: insertError } = await clienteSupabase.from('tramites').insert(tramite);
+      if (insertError) throw insertError;
+
+      this._archivoAdjunto = null; // Limpiar para el siguiente
       Toast.exito('Emitido con éxito');
       App.navegar('documentos');
     } catch (err) { Toast.error(err.message); } 
@@ -459,16 +472,19 @@ const Tramites = {
         cargo_destinatario: document.getElementById('d-cargo-resp').value,
         area: document.getElementById('d-area').value,
         estado: document.getElementById('d-estado').value,
+        archivo_url: this._archivoPendienteDerivar || null, // Mantener el adjunto original
         usuario_id: this._perfil.id
       };
       const { data: nt, error: et } = await clienteSupabase.from('tramites').insert(tramite).select().single();
       if (et) throw et;
+
       await clienteSupabase.from('derivaciones').insert({
         tramite_id: nt.id, area_origen: 'MESA DE PARTES', area_destino: tramite.area,
         responsable_destino: tramite.destinatario, prioridad: tramite.prioridad,
         estado: tramite.estado, observaciones: document.getElementById('d-observaciones').value,
         usuario_id: this._perfil.id
       });
+      this._archivoPendienteDerivar = null; // Limpiar
       Toast.exito('Registrado y derivado');
       App.navegar('documentos');
     } catch (err) { Toast.error(err.message); }
