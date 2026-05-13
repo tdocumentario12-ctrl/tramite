@@ -122,9 +122,10 @@ const Documentos = {
           </div>
 
           <div class="modal-footer" style="padding: 15px 25px; background: white; border-top: 1px solid #F1F5F9; display: flex; justify-content: space-between;">
-            <div style="display:flex; gap:10px;">
-              <button class="btn-primario" id="btn-generar-pdf-formal" style="padding: 8px 16px; font-size: 0.85rem;">🖨️ PDF Institucional</button>
-              <button class="btn-secundario" id="btn-descargar-det" style="padding: 8px 16px; font-size: 0.85rem;">📎 Ver Adjunto</button>
+            <div style="display:flex; gap:10px; flex-wrap: wrap;">
+              <button class="btn-exportar-pdf" id="btn-generar-pdf-formal">🖨️ PDF Institucional</button>
+              <button class="btn-exportar-word" id="btn-exportar-word">📝 Exportar Word</button>
+              <button class="btn-ver-adjunto" id="btn-descargar-det">📎 Ver Adjunto</button>
             </div>
             <button class="btn-cancelar" onclick="Documentos.cerrarModal()" style="margin:0; padding: 8px 20px; font-size: 0.85rem;">Cerrar</button>
           </div>
@@ -268,47 +269,200 @@ const Documentos = {
       else Toast.error('No hay archivo adjunto');
     };
     document.getElementById('btn-generar-pdf-formal').onclick = () => this.generarNotaPDF(doc);
+    document.getElementById('btn-exportar-word').onclick = () => this.generarWord(doc);
     modal.classList.add('visible');
   },
 
+  /* ── Cargar firma digital del usuario logueado ── */
+  async _cargarFirmaUsuario() {
+    try {
+      const { data: { user } } = await clienteSupabase.auth.getUser();
+      if (!user) return null;
+      const { data } = await clienteSupabase.from('perfiles').select('firma_url, nombre_completo, cargo').eq('id', user.id).single();
+      return data || null;
+    } catch (e) { return null; }
+  },
+
+  /* ── PDF Institucional (formato formal alineado) ── */
   async generarNotaPDF(doc) {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF('p', 'mm', 'a4');
+    const mIzq = 27, mDer = 27, anchoUtil = 210 - mIzq - mDer;
+    const perfil = await this._cargarFirmaUsuario();
+
     try {
+      // --- Logo ---
       const img = new Image(); img.src = 'assets/img/Logo.jpg';
-      await new Promise(r => img.onload = r);
-      pdf.addImage(img, 'JPEG', 15, 10, 25, 25);
-      pdf.setFont('helvetica', 'normal'); pdf.setFontSize(10); pdf.setTextColor(100);
-      pdf.text('“Año de la recuperación y consolidación de la economía peruana”', 105, 15, { align: 'center' });
-      pdf.setTextColor(0); pdf.setFontSize(11);
-      pdf.text(`Chincha, ${this._formatearFechaLarga(doc.fecha_documento)}`, 195, 45, { align: 'right' });
-      pdf.setFont('helvetica', 'bold'); pdf.setFontSize(14);
-      const tit = `${doc.tipo_documento} ${doc.numero_documento}`;
-      pdf.text(tit, 15, 60); pdf.line(15, 61, 15 + pdf.getTextWidth(tit), 61);
-      pdf.setFontSize(12); pdf.text('Señor', 15, 75); pdf.text(':', 35, 75); pdf.text(doc.destinatario.toUpperCase(), 45, 75);
-      pdf.setFont('helvetica', 'bold'); pdf.text(doc.cargo_destinatario ? doc.cargo_destinatario.toUpperCase() : '---', 45, 81);
-      pdf.text('Asunto', 15, 95); pdf.text(':', 35, 95); pdf.text(doc.asunto.toUpperCase(), 45, 95);
+      await new Promise((r, j) => { img.onload = r; img.onerror = j; });
+      pdf.addImage(img, 'JPEG', mIzq, 10, 22, 22);
+
+      // --- Lema del año (centrado, itálica) ---
+      pdf.setFont('helvetica', 'italic'); pdf.setFontSize(9); pdf.setTextColor(80);
+      pdf.text('\u201cAño de la recuperación y consolidación de la economía peruana\u201d', 105, 18, { align: 'center' });
+
+      // --- Fecha (derecha) ---
+      pdf.setFont('helvetica', 'normal'); pdf.setFontSize(11); pdf.setTextColor(0);
+      pdf.text('Chincha, ' + this._formatearFechaLarga(doc.fecha_documento), 210 - mDer, 48, { align: 'right' });
+
+      // --- Título subrayado ---
+      pdf.setFont('helvetica', 'bold'); pdf.setFontSize(13);
+      const tit = doc.tipo_documento + ' ' + doc.numero_documento;
+      pdf.text(tit, mIzq, 62);
+      pdf.setLineWidth(0.5);
+      pdf.line(mIzq, 63.5, mIzq + pdf.getTextWidth(tit), 63.5);
+
+      // --- Señor / Cargo (tabulado) ---
+      const colVal = 58;
+      let y = 75;
       pdf.setFont('helvetica', 'normal'); pdf.setFontSize(11);
-      const lines = pdf.splitTextToSize(doc.descripcion || '', 175);
-      pdf.text(lines, 15, 115);
-      pdf.text('Atentamente,', 15, 115 + (lines.length * 6) + 20);
-      pdf.save(`${doc.numero_documento}.pdf`);
-      Toast.exito('PDF generado');
-    } catch (e) { Toast.error('Error PDF'); }
+      pdf.text('Señor', mIzq, y);
+      pdf.text(':', 50, y);
+      pdf.text(doc.destinatario.toUpperCase(), colVal, y);
+
+      if (doc.cargo_destinatario) {
+        y += 6;
+        pdf.setFont('helvetica', 'bold'); pdf.setFontSize(11);
+        pdf.text(doc.cargo_destinatario.toUpperCase(), colVal, y);
+      }
+
+      // --- Asunto (tabulado) ---
+      y += 14;
+      pdf.setFont('helvetica', 'normal'); pdf.setFontSize(11);
+      pdf.text('Asunto', mIzq, y);
+      pdf.text(':', 50, y);
+      const asuntoLines = pdf.splitTextToSize(doc.asunto.toUpperCase(), anchoUtil - (colVal - mIzq));
+      pdf.text(asuntoLines, colVal, y);
+      y += asuntoLines.length * 6;
+
+      // --- Línea separadora ---
+      y += 8;
+      pdf.setDrawColor(180); pdf.setLineWidth(0.3);
+      pdf.line(mIzq, y, 210 - mDer, y);
+      y += 12;
+
+      // --- Cuerpo (justificado) ---
+      pdf.setFont('helvetica', 'normal'); pdf.setFontSize(11);
+      const bodyLines = pdf.splitTextToSize(doc.descripcion || '', anchoUtil);
+      pdf.text(bodyLines, mIzq, y, { align: 'justify', maxWidth: anchoUtil });
+      y += bodyLines.length * 6;
+
+      // --- Cierre (solo si no está ya en la descripción) ---
+      const descLower = (doc.descripcion || '').toLowerCase();
+      const yaContieneAtentamente = descLower.includes('atentamente');
+      if (!yaContieneAtentamente) {
+        y += 18;
+        pdf.text('Atentamente,', mIzq, y);
+      }
+      y += 12;
+
+      // --- Firma digital (si existe) ---
+      if (perfil && perfil.firma_url) {
+        try {
+          const firmaImg = new Image();
+          firmaImg.crossOrigin = 'anonymous';
+          firmaImg.src = perfil.firma_url;
+          await new Promise((r, j) => { firmaImg.onload = r; firmaImg.onerror = j; });
+          pdf.addImage(firmaImg, 'PNG', mIzq, y, 40, 20);
+          y += 22;
+        } catch (fe) { console.warn('No se pudo cargar firma:', fe); }
+      }
+
+      // --- Nombre y cargo del firmante ---
+      if (perfil && perfil.nombre_completo) {
+        y += 4;
+        pdf.setFont('helvetica', 'bold'); pdf.setFontSize(10);
+        pdf.text('_________________________', mIzq, y);
+        y += 5;
+        pdf.text(perfil.nombre_completo.toUpperCase(), mIzq, y);
+        if (perfil.cargo) {
+          y += 5;
+          pdf.setFont('helvetica', 'normal');
+          pdf.text(perfil.cargo, mIzq, y);
+        }
+      }
+
+      pdf.save(doc.numero_documento + '.pdf');
+      Toast.exito('PDF Institucional generado');
+    } catch (e) {
+      console.error(e);
+      Toast.error('Error al generar PDF');
+    }
+  },
+
+  /* ── Exportar Word (.doc) ── */
+  async generarWord(doc) {
+    const perfil = await this._cargarFirmaUsuario();
+    try {
+      let firmaHtml = '';
+      if (perfil && perfil.firma_url) {
+        firmaHtml = '<p style="margin:0;"><img src="' + perfil.firma_url + '" width="120" height="60"></p>';
+      }
+      let firmante = '';
+      if (perfil && perfil.nombre_completo) {
+        firmante = '<p style="margin:0;"><b>_________________________</b></p>' +
+          '<p style="margin:0;"><b>' + perfil.nombre_completo.toUpperCase() + '</b></p>' +
+          (perfil.cargo ? '<p style="margin:0;">' + perfil.cargo + '</p>' : '');
+      }
+
+      const source = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
+        '<head><meta charset="utf-8"><title>' + doc.numero_documento + '</title>' +
+        '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml><![endif]-->' +
+        '<style>' +
+        '@page { size: A4; margin: 2.5cm 2.7cm 1cm 2.7cm; }' +
+        'body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.6; color: #000; }' +
+        '.lema { text-align: center; font-style: italic; font-size: 9pt; color: #555; margin-bottom: 24pt; }' +
+        '.fecha { text-align: right; font-size: 11pt; margin-bottom: 12pt; }' +
+        '.titulo { font-size: 13pt; font-weight: bold; text-decoration: underline; margin-bottom: 14pt; }' +
+        '.campo { font-size: 11pt; margin: 0; line-height: 1.4; }' +
+        '.campo-cargo { font-size: 11pt; font-weight: bold; margin: 0 0 0 78px; line-height: 1.4; }' +
+        '.campo-label { display: inline-block; width: 70px; }' +
+        '.separador { border: none; border-top: 1px solid #ccc; margin: 14pt 0; }' +
+        '.cuerpo { font-size: 11pt; text-align: justify; line-height: 1.6; margin-bottom: 20pt; }' +
+        '.cierre { font-size: 11pt; margin-top: 24pt; }' +
+        '</style></head><body>' +
+        '<p class="lema">\u201cAño de la recuperación y consolidación de la economía peruana\u201d</p>' +
+        '<p class="fecha">Chincha, ' + this._formatearFechaLarga(doc.fecha_documento) + '</p>' +
+        '<p class="titulo">' + doc.tipo_documento + ' ' + doc.numero_documento + '</p>' +
+        '<p class="campo"><span class="campo-label">Señor</span>: &nbsp;&nbsp;&nbsp;' + doc.destinatario.toUpperCase() + '</p>' +
+        '<p class="campo-cargo">' + (doc.cargo_destinatario ? doc.cargo_destinatario.toUpperCase() : '') + '</p>' +
+        '<br>' +
+        '<p class="campo"><span class="campo-label">Asunto</span>: &nbsp;&nbsp;&nbsp;' + doc.asunto.toUpperCase() + '</p>' +
+        '<hr class="separador">' +
+        '<div class="cuerpo">' + (doc.descripcion || '').replace(/\n/g, '<br>') + '</div>' +
+        ((doc.descripcion || '').toLowerCase().includes('atentamente') ? '' : '<p class="cierre">Atentamente,</p>') + '<br>' +
+        firmaHtml + firmante +
+        '</body></html>';
+
+      const blob = new Blob(['\ufeff', source], { type: 'application/msword' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = doc.numero_documento + '.doc';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      Toast.exito('Documento Word generado');
+    } catch (e) {
+      console.error(e);
+      Toast.error('Error al generar Word');
+    }
   },
 
   _formatearFechaLarga(f) {
-    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-    const p = f.split('-'); return `${parseInt(p[2])} de ${meses[parseInt(p[1])-1]} del ${p[0]}`;
+    const meses = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+    const p = f.split('-');
+    return parseInt(p[2]) + ' de ' + meses[parseInt(p[1])-1] + ' del ' + p[0];
   },
 
   cerrarModal() { document.getElementById('modal-doc-detalle').classList.remove('visible'); },
+
   limpiarFiltros() {
-    ['f-busqueda', 'f-tipo', 'f-desde', 'f-hasta'].forEach(id => document.getElementById(id).value = '');
+    ['f-busqueda','f-tipo','f-desde','f-hasta'].forEach(function(id) { document.getElementById(id).value = ''; });
     this.cargarDocumentos(1);
   },
 
   derivarNuevamente(id) { sessionStorage.setItem('derivar_id', id); App.navegar('registrar-tramite'); },
+
   async eliminar(id) {
     if (confirm('¿Eliminar registro?')) {
       const { error } = await clienteSupabase.from('documentos').delete().eq('id', id);

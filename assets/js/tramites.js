@@ -225,6 +225,7 @@ const Tramites = {
             </div>
           </section>
 
+
           <div class="form-acciones">
             <button type="button" class="btn-cancelar" onclick="App.navegar('dashboard')">Cancelar</button>
             <button type="submit" class="btn-guardar-tramite" id="t-btn-guardar">
@@ -383,6 +384,7 @@ const Tramites = {
     const textarea = document.getElementById('t-descripcion');
     textarea?.addEventListener('input', () => { document.getElementById('t-char-counter').textContent = `${textarea.value.length}/2000`; });
 
+
     // Autocomplete
     const selectArea = document.getElementById('t-area');
     selectArea?.addEventListener('change', () => {
@@ -450,6 +452,8 @@ const Tramites = {
       if (insertError) throw insertError;
 
       this._archivoAdjunto = null; // Limpiar para el siguiente
+
+
       Toast.exito('Emitido con éxito');
       App.navegar('documentos');
     } catch (err) { Toast.error(err.message); } 

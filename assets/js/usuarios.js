@@ -134,6 +134,24 @@ const Usuarios = {
                 <label for="campo-rol" class="md-label">Rol del Usuario</label>
                 <div class="md-line"></div>
               </div>
+
+              <!-- Cargo -->
+              <div class="md-field">
+                <input type="text" id="campo-cargo" class="md-input" placeholder=" ">
+                <label for="campo-cargo" class="md-label">Cargo</label>
+                <div class="md-line"></div>
+                <span class="md-helper">Ej. Jefe de Unidad SIS</span>
+              </div>
+
+              <!-- Firma Digital -->
+              <div class="md-field full">
+                <label style="font-size: 0.75rem; font-weight: 600; color: var(--color-primario); display: block; margin-bottom: 8px;">Firma Digital (PNG, JPG)</label>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                  <input type="file" id="campo-firma" accept="image/png, image/jpeg" style="font-size: 0.85rem;">
+                  <img id="firma-preview" src="" alt="" style="max-height: 40px; display: none; border: 1px solid #E2E8F0; border-radius: 6px; padding: 2px;">
+                </div>
+                <span class="md-helper">Se recomienda fondo transparente (PNG)</span>
+              </div>
             </div>
           </form>
 
@@ -268,8 +286,10 @@ const Usuarios = {
     document.getElementById('campo-usuario').value = '';
     document.getElementById('campo-password').value = '';
     document.getElementById('campo-rol').value = 'operador';
-    
-    // Limpiar clases de validación (si se implementan)
+    document.getElementById('campo-cargo').value = '';
+    document.getElementById('campo-firma').value = '';
+    const preview = document.getElementById('firma-preview');
+    if (preview) { preview.src = ''; preview.style.display = 'none'; }
   },
 
   /**
@@ -292,6 +312,8 @@ const Usuarios = {
     const usuario = document.getElementById('campo-usuario').value.trim();
     const password = document.getElementById('campo-password').value.trim();
     const rol = document.getElementById('campo-rol').value;
+    const cargo = document.getElementById('campo-cargo').value.trim();
+    const firmaInput = document.getElementById('campo-firma');
 
     // ── Validaciones en el cliente ──
     if (!nombre || !gmail || !usuario || (!id && !password)) {
@@ -331,16 +353,25 @@ const Usuarios = {
     try {
       if (id) {
         // ── ACTUALIZAR perfil existente ──
-        const { error } = await clienteSupabase
-          .from('perfiles')
-          .update({
-            nombre_completo: nombre,
-            gmail: gmail,
-            nombre_usuario: usuario,
-            rol: rol
-          })
-          .eq('id', id);
+        const updateData = {
+          nombre_completo: nombre,
+          gmail: gmail,
+          nombre_usuario: usuario,
+          rol: rol,
+          cargo: cargo || null
+        };
 
+        // Subir firma si se seleccionó una nueva
+        if (firmaInput && firmaInput.files.length > 0) {
+          const file = firmaInput.files[0];
+          const ext = file.name.split('.').pop();
+          const path = 'firmas/' + id + '.' + ext;
+          const { error: upErr } = await clienteSupabase.storage.from('documentos').upload(path, file, { upsert: true });
+          if (upErr) { console.error(upErr); Toast.error('Error al subir firma'); return; }
+          updateData.firma_url = clienteSupabase.storage.from('documentos').getPublicUrl(path).data.publicUrl;
+        }
+
+        const { error } = await clienteSupabase.from('perfiles').update(updateData).eq('id', id);
         if (error) throw error;
         Toast.exito('Usuario actualizado correctamente.');
       } else {
@@ -400,6 +431,17 @@ const Usuarios = {
       document.getElementById('campo-gmail').value = u.gmail;
       document.getElementById('campo-usuario').value = u.nombre_usuario;
       document.getElementById('campo-rol').value = u.rol;
+      document.getElementById('campo-cargo').value = u.cargo || '';
+
+      // Mostrar preview de firma existente
+      const preview = document.getElementById('firma-preview');
+      if (u.firma_url) {
+        preview.src = u.firma_url;
+        preview.style.display = 'block';
+      } else {
+        preview.src = '';
+        preview.style.display = 'none';
+      }
       
       document.getElementById('modal-titulo').textContent = 'Editar Usuario';
       document.getElementById('modal-subtitulo').textContent = 'Modifique los datos del perfil seleccionado.';

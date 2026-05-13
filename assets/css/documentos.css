@@ -130,7 +130,7 @@
 .campo-label {
   font-size: 0.7rem;
   font-weight: 700;
-  color: #475569;
+  color: #694e47;
 }
 
 .campo-input {
@@ -306,6 +306,73 @@
 }
 
 /* ── Responsive Móvil ── */
+
+/* ── Botones de Exportación (Modal Detalle) ── */
+.btn-exportar-pdf {
+  background: #FEE2E2 !important; /* Rojo pastel */
+  color: #B91C1C !important;
+  border: 1px solid #F87171 !important;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-exportar-pdf:hover {
+  background: #FECACA !important;
+  border-color: #EF4444 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(220, 38, 38, 0.1);
+}
+
+.btn-exportar-word {
+  background: #E0F7FF !important; /* Celeste pastel */
+  color: #0369A1 !important;
+  border: 1px solid #7DD3FC !important;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-exportar-word:hover {
+  background: #BAE6FD !important;
+  border-color: #38BDF8 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(2, 132, 199, 0.1);
+}
+.btn-ver-adjunto {
+  background: #FFEDD5 !important; /* Fondo Naranja pastel */
+  color: #b97a1c !important;      /* Texto para contraste */
+  border: 1px solid #e9b047 !important; /* Contorno Rojo pastel */
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-ver-adjunto:hover {
+  background: #FED7AA !important; /* Naranja un poco más intenso al hover */
+  border-color: #F87171 !important; /* Rojo un poco más intenso al hover */
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(185, 28, 28, 0.1);
+}
+
 @media (max-width: 640px) {
   .doc-header-acciones {
     width: 100%;
