@@ -152,6 +152,46 @@
   flex-wrap: wrap;
 }
 
+.filtro-acciones .btn-primario,
+.filtro-acciones .btn-secundario {
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.filtro-acciones .btn-primario {
+  background: var(--color-primario);
+  color: white;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+}
+
+.filtro-acciones .btn-primario:hover {
+  background: var(--color-primario-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(2, 132, 199, 0.3);
+}
+
+.filtro-acciones .btn-secundario {
+  background: var(--color-primario-light);
+  color: var(--color-primario);
+  border: 1px solid transparent;
+}
+
+.filtro-acciones .btn-secundario:hover {
+  background: #E0F2FE;
+  border-color: var(--color-primario);
+  transform: translateY(-2px);
+}
+
+
 /* ── Tabla (EL PUNTO CRÍTICO) ── */
 .doc-tabla-wrapper {
   background: white;

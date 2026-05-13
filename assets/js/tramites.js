@@ -7,6 +7,23 @@ const Tramites = {
   _contenedor: null,
   _archivoAdjunto: null,
   _tabActual: 'emitir', // 'emitir' o 'derivar'
+  _dataAreas: {
+    "Administración General": { nombre: "DRA. ELENA ESTHER BORJAS MAURICIO", cargo: "Administradora del Hospital San José de Chincha" },
+    "Cirugía": { nombre: "M.C. BRIAN DONAYRE PALOMINO", cargo: "Jefe del Departamento de Cirugía" },
+    "Pediatría": { nombre: "M.C. VICTOR VARGAS URIBE", cargo: "Jefe del Departamento de Pediatría" },
+    "Medicina Interna": { nombre: "M.C. FERNANDO CAGNA PUPPI", cargo: "Jefe del Departamento de Medicina" },
+    "Ginecología y Obstetricia": { nombre: "M.C. KAROL RAMOS JEREZ", cargo: "Jefe del Departamento de Gineco-Obstetricia" },
+    "Patología Clínica y Anatomía Patológica": { nombre: "M.C. JACQUELINE TELLO ALMEYDA", cargo: "Jefe del Departamento de Patología Clínica y Anatomía" },
+    "Radiología e Imágenes": { nombre: "M.C. BETTY CABRERA BENAVIDES", cargo: "Jefe del Departamento de Radiodiagnóstico por Imágenes" },
+    "Centro Quirúrgico y Anestesiología": { nombre: "M.C. LUCIO CERVANTES HUAMANI", cargo: "Jefe del Departamento de Anestesiología y Centro Quirúrgico" },
+    "Emergencia y UCI": { nombre: "M.C. LUIS ANGEL CHIRINOS HOYOS", cargo: "Jefe del Departamento de Emergencia y Cuidados Críticos" },
+    "Enfermería": { nombre: "LIC. INES QUISPE PADILLA", cargo: "Jefe del Departamento de Enfermería" },
+    "Medicina Especializada": { nombre: "M.C. MARCO ANTONIO GUERRERO ANGULO", cargo: "Jefe del Servicio de Medicina Especializada - Departamento de Medicina" },
+    "Neonatología": { nombre: "M.C. EUSEBIO VITALIO ALFARO", cargo: "Jefe del Servicio de Neonatología del Departamento de Pediatría" },
+    "Cirugía Especializada": { nombre: "M.C. Jefe del Servicio de Cirugía Especializada", cargo: "Jefe del Servicio de Cirugía Especializada" },
+    "Emergencia": { nombre: "M.C. CARLOS ÑAHUIS PALOMINO", cargo: "Jefe del Servicio de Emergencia" },
+    "Farmacia": { nombre: "Q.F. KERIM SANCHEZ MENDOZA", cargo: "Jefe del Servicio de Farmacia" }
+  },
 
   /**
    * Inicializar y renderizar vista principal de trámites
@@ -151,31 +168,33 @@ const Tramites = {
                 <input type="text" id="t-remitente" class="campo-input" placeholder="Nombre o institución" required>
               </div>
               <div class="campo-grupo">
+                <label class="campo-label">Área</label>
+                <select id="t-area" class="campo-input" required>
+                  <option value="" disabled selected>Seleccione el área</option>
+                  <option value="Administración General">Administración General</option>
+                  <option value="Cirugía">Cirugía</option>
+                  <option value="Pediatría">Pediatría</option>
+                  <option value="Medicina Interna">Medicina Interna</option>
+                  <option value="Ginecología y Obstetricia">Ginecología y Obstetricia</option>
+                  <option value="Patología Clínica y Anatomía Patológica">Patología Clínica y Anatomía Patológica</option>
+                  <option value="Radiología e Imágenes">Radiología e Imágenes</option>
+                  <option value="Centro Quirúrgico y Anestesiología">Centro Quirúrgico y Anestesiología</option>
+                  <option value="Emergencia y UCI">Emergencia y UCI</option>
+                  <option value="Enfermería">Enfermería</option>
+                  <option value="Medicina Especializada">Medicina Especializada</option>
+                  <option value="Neonatología">Neonatología</option>
+                  <option value="Cirugía Especializada">Cirugía Especializada</option>
+                  <option value="Emergencia">Emergencia</option>
+                  <option value="Farmacia">Farmacia</option>
+                </select>
+              </div>
+              <div class="campo-grupo">
                 <label class="campo-label">Destinatario (Señor/a)</label>
                 <input type="text" id="t-destinatario" class="campo-input" placeholder="Nombre completo" required>
               </div>
               <div class="campo-grupo">
                 <label class="campo-label">Cargo del Destinatario</label>
                 <input type="text" id="t-cargo" class="campo-input" placeholder="Ej. Jefe de Unidad" required>
-              </div>
-              <div class="campo-grupo">
-                <label class="campo-label">Área</label>
-                <select id="t-area" class="campo-input" required>
-                  <option value="" disabled selected>Seleccione el área</option>
-                  <option value="DIRECCIÓN">Dirección</option>
-                  <option value="ADMINISTRACIÓN">Administración</option>
-                  <option value="LOGÍSTICA">Logística</option>
-                  <option value="RECURSOS HUMANOS">Recursos Humanos</option>
-                  <option value="CONTABILIDAD">Contabilidad</option>
-                  <option value="ESTADÍSTICA E INFORMÁTICA">Estadística e Informática</option>
-                  <option value="SEGUROS PRIVADOS">Seguros Privados</option>
-                  <option value="FISSAL">Fissal</option>
-                  <option value="ADMISIÓN">Admisión</option>
-                  <option value="FARMACIA">Farmacia</option>
-                  <option value="LABORATORIO">Laboratorio</option>
-                  <option value="ENFERMERÍA">Enfermería</option>
-                  <option value="SERVICIO SOCIAL">Servicio Social</option>
-                </select>
               </div>
             </div>
           </section>
@@ -272,9 +291,24 @@ const Tramites = {
               <div class="campo-grupo">
                 <label class="campo-label">Área Destino</label>
                 <select id="d-area" class="campo-input" required>
-                  <option value="" disabled selected>Seleccione área</option>
-                  <option value="SEGUROS PRIVADOS">Seguros Privados</option>
-                  <option value="FISSAL">Fissal</option>
+                  <option value="" disabled selected>Seleccione el área</option>
+                  <option value="Administración General">Administración General</option>
+                  <option value="Cirugía">Cirugía</option>
+                  <option value="Pediatría">Pediatría</option>
+                  <option value="Medicina Interna">Medicina Interna</option>
+                  <option value="Ginecología y Obstetricia">Ginecología y Obstetricia</option>
+                  <option value="Patología Clínica y Anatomía Patológica">Patología Clínica y Anatomía Patológica</option>
+                  <option value="Radiología e Imágenes">Radiología e Imágenes</option>
+                  <option value="Centro Quirúrgico y Anestesiología">Centro Quirúrgico y Anestesiología</option>
+                  <option value="Emergencia y UCI">Emergencia y UCI</option>
+                  <option value="Enfermería">Enfermería</option>
+                  <option value="Medicina Especializada">Medicina Especializada</option>
+                  <option value="Neonatología">Neonatología</option>
+                  <option value="Cirugía Especializada">Cirugía Especializada</option>
+                  <option value="Emergencia">Emergencia</option>
+                  <option value="Farmacia">Farmacia</option>
+                  <option value="Unidad de Seguros Privados">Unidad de Seguros Privados</option>
+                  <option value="FISSAL">FISSAL</option>
                 </select>
               </div>
               <div class="campo-grupo">
@@ -345,10 +379,30 @@ const Tramites = {
     
     const textarea = document.getElementById('t-descripcion');
     textarea?.addEventListener('input', () => { document.getElementById('t-char-counter').textContent = `${textarea.value.length}/2000`; });
+
+    // Autocomplete
+    const selectArea = document.getElementById('t-area');
+    selectArea?.addEventListener('change', () => {
+      const data = this._dataAreas[selectArea.value];
+      if (data) {
+        document.getElementById('t-destinatario').value = data.nombre;
+        document.getElementById('t-cargo').value = data.cargo;
+      }
+    });
   },
 
   _vincularEventosDerivar() {
     document.getElementById('form-derivacion')?.addEventListener('submit', (e) => { e.preventDefault(); this._guardarDerivacion(); });
+
+    // Autocomplete
+    const selectArea = document.getElementById('d-area');
+    selectArea?.addEventListener('change', () => {
+      const data = this._dataAreas[selectArea.value];
+      if (data) {
+        document.getElementById('d-responsable').value = data.nombre;
+        document.getElementById('d-cargo-resp').value = data.cargo;
+      }
+    });
   },
 
   _manejarArchivo(file) {

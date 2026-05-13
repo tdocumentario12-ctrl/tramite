@@ -51,10 +51,7 @@ const Documentos = {
               <label class="campo-label">Número / Remitente</label>
               <input type="text" id="f-busqueda" class="campo-input" placeholder="Buscar texto...">
             </div>
-            <div class="campo-grupo">
-              <label class="campo-label">Asunto</label>
-              <input type="text" id="f-asunto" class="campo-input" placeholder="Palabra clave...">
-            </div>
+
             <div class="campo-grupo">
               <label class="campo-label">Tipo de Documento</label>
               <select id="f-tipo" class="campo-input">
@@ -67,16 +64,7 @@ const Documentos = {
                 <option value="INFORME Nº">Informe Nº</option>
               </select>
             </div>
-            <div class="campo-grupo">
-              <label class="campo-label">Estado</label>
-              <select id="f-estado" class="campo-input">
-                <option value="">Todos</option>
-                <option value="REGISTRADO">Registrado</option>
-                <option value="DERIVADO">Derivado</option>
-                <option value="EN PROCESO">En Proceso</option>
-                <option value="FINALIZADO">Finalizado</option>
-              </select>
-            </div>
+
             <div class="campo-grupo">
               <label class="campo-label">Desde</label>
               <input type="date" id="f-desde" class="campo-input">
@@ -120,13 +108,13 @@ const Documentos = {
 
       <!-- Modal de Detalle (Compacto y Premium) -->
       <div class="modal-overlay" id="modal-doc-detalle">
-        <div class="modal-card" style="max-width: 950px; width: 95%; border-radius: 16px;">
-          <div class="modal-header" style="padding: 15px 25px; border-bottom: 1px solid #F1F5F9;">
+        <div class="modal-card" style="max-width: 950px; width: 95%; border-radius: 16px; background: white; overflow: hidden; box-shadow: var(--sombra-xl);">
+          <div class="modal-header" style="padding: 15px 25px; border-bottom: 1px solid #F1F5F9; background: white; display: flex; align-items: center; justify-content: space-between;">
             <div style="display:flex; align-items:center; gap:12px;">
               <span style="font-size: 1.5rem;">📄</span>
               <h2 style="margin:0; font-size:1.1rem; color:#0F172A;">Detalle del Documento</h2>
             </div>
-            <button class="modal-cerrar" onclick="Documentos.cerrarModal()">&times;</button>
+            <button class="modal-cerrar" onclick="Documentos.cerrarModal()" style="background: none; border: none; font-size: 1.8rem; line-height: 1; cursor: pointer; color: #94A3B8; padding: 0; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; transition: all 0.2s;">&times;</button>
           </div>
           
           <div class="modal-body" id="det-body" style="padding: 20px; background: #F8FAFC;">
@@ -169,12 +157,10 @@ const Documentos = {
       let query = clienteSupabase.from('documentos').select('*, perfiles(nombre_completo)', { count: 'exact' });
       const busqueda = document.getElementById('f-busqueda').value;
       if (busqueda) query = query.or(`numero_documento.ilike.%${busqueda}%,remitente.ilike.%${busqueda}%`);
-      const asunto = document.getElementById('f-asunto').value;
-      if (asunto) query = query.ilike('asunto', `%${asunto}%`);
+
       const tipo = document.getElementById('f-tipo').value;
       if (tipo) query = query.eq('tipo_documento', tipo);
-      const estado = document.getElementById('f-estado').value;
-      if (estado) query = query.eq('estado', estado);
+
       const desde = document.getElementById('f-desde').value;
       if (desde) query = query.gte('fecha_documento', desde);
       const hasta = document.getElementById('f-hasta').value;
@@ -318,7 +304,7 @@ const Documentos = {
 
   cerrarModal() { document.getElementById('modal-doc-detalle').classList.remove('visible'); },
   limpiarFiltros() {
-    ['f-busqueda', 'f-asunto', 'f-tipo', 'f-estado', 'f-desde', 'f-hasta'].forEach(id => document.getElementById(id).value = '');
+    ['f-busqueda', 'f-tipo', 'f-desde', 'f-hasta'].forEach(id => document.getElementById(id).value = '');
     this.cargarDocumentos(1);
   },
 
