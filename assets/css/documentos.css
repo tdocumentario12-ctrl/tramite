@@ -154,9 +154,9 @@
 
 .filtro-acciones .btn-primario,
 .filtro-acciones .btn-secundario {
-  padding: 10px 24px;
+  padding: 8px 22px;
   border-radius: 10px;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 700;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
@@ -312,9 +312,9 @@
   background: #FEE2E2 !important; /* Rojo pastel */
   color: #B91C1C !important;
   border: 1px solid #F87171 !important;
-  padding: 8px 18px;
+  padding: 8px 22px;
   border-radius: 10px;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -334,9 +334,9 @@
   background: #E0F7FF !important; /* Celeste pastel */
   color: #0369A1 !important;
   border: 1px solid #7DD3FC !important;
-  padding: 8px 18px;
+  padding: 8px 22px;
   border-radius: 10px;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 700;
   display: flex;
   align-items: center;
@@ -355,9 +355,9 @@
   background: #FFEDD5 !important; /* Fondo Naranja pastel */
   color: #b97a1c !important;      /* Texto para contraste */
   border: 1px solid #e9b047 !important; /* Contorno Rojo pastel */
-  padding: 8px 18px;
+  padding: 8px 22px;
   border-radius: 10px;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
   font-weight: 700;
   display: flex;
   align-items: center;

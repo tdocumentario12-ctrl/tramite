@@ -8,153 +8,168 @@
   background: var(--color-fondo);
 }
 
-/* ── Sidebar ── */
+/* ── Sidebar Flotante (Medical Dashboard Style) ── */
 .sidebar {
   width: var(--sidebar-ancho);
-  min-height: 100vh;
-  background: var(--sidebar-bg);
+  position: fixed;
+  top: 16px;
+  left: 16px;
+  bottom: 16px;
+  background: linear-gradient(180deg, #1E88E5 0%, #1565C0 100%);
+  border-radius: 24px;
+  z-index: var(--z-sidebar);
   display: flex;
   flex-direction: column;
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  z-index: var(--z-sidebar);
-  transition: transform var(--transicion-normal), width var(--transicion-normal);
-  overflow-y: auto;
-  overflow-x: hidden;
+  align-items: center;
+  box-shadow: 0 8px 32px rgba(30, 136, 229, 0.3), 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Cabecera del sidebar (logo + nombre) */
+/* Cabecera: solo logo centrado */
 .sidebar-cabecera {
-  padding: var(--espacio-lg) var(--espacio-md);
+  width: 100%;
+  padding: 20px 0 12px;
   display: flex;
   align-items: center;
-  gap: 12px;
-}
-
-.sidebar-logo {
-  width: 44px;
-  height: 44px;
-  object-fit: contain;
-  border-radius: var(--radio-md);
+  justify-content: center;
   flex-shrink: 0;
 }
 
+.sidebar-logo {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 12px;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 4px;
+}
+
+/* Ocultar textos del sidebar */
 .sidebar-info {
-  flex: 1;
-  min-width: 0;
+  display: none;
 }
 
-.sidebar-titulo {
-  font-size: var(--fuente-sm);
-  font-weight: 800;
-  color: var(--sidebar-texto-activo);
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
+.sidebar-titulo,
 .sidebar-subtitulo {
-  font-size: var(--fuente-xs);
-  color: var(--sidebar-texto);
-  white-space: nowrap;
-  opacity: 0.8;
+  display: none;
 }
 
-/* Línea divisora */
+/* Divisor sutil */
 .sidebar-divisor {
+  width: 36px;
   height: 1px;
-  background: rgba(255, 255, 255, 0.1);
-  margin: 0 var(--espacio-md);
+  background: rgba(255, 255, 255, 0.2);
+  margin: 4px 0;
+  border-radius: 1px;
 }
 
-/* Navegación */
+/* Navegación centrada */
 .sidebar-nav {
   flex: 1;
-  padding: var(--espacio-md) 0;
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  width: 100%;
 }
 
 .sidebar-menu {
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  padding: 0 var(--espacio-sm);
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  width: 100%;
 }
 
+/* Ítems del menú: solo íconos */
 .sidebar-item {
+  width: 48px;
+  height: 48px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 11px 16px;
-  border-radius: var(--radio-md);
-  color: var(--sidebar-texto);
-  font-size: var(--fuente-sm);
-  font-weight: 500;
+  justify-content: center;
+  border-radius: 16px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0;           /* Oculta texto */
+  line-height: 0;
+  padding: 0;
   cursor: pointer;
-  transition: background var(--transicion-rapida), color var(--transicion-rapida);
-  white-space: nowrap;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
   user-select: none;
 }
 
 .sidebar-item:hover {
-  background: var(--sidebar-hover);
-  color: var(--sidebar-texto-activo);
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+  transform: scale(1.08);
 }
 
+/* Botón activo: fondo blanco, ícono azul */
 .sidebar-item.activo {
-  background: var(--sidebar-activo);
-  color: var(--sidebar-texto-activo);
+  width: 52px;
+  height: 52px;
+  background: #FFFFFF;
+  color: #1E88E5;
+  border-radius: 18px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
   font-weight: 600;
 }
 
+/* Quitar la barra lateral izquierda del diseño anterior */
 .sidebar-item.activo::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  width: 3px;
-  height: 28px;
-  background: var(--color-primario);
-  border-radius: 0 3px 3px 0;
+  display: none;
 }
 
 .sidebar-item svg {
-  width: 20px;
-  height: 20px;
+  width: 22px;
+  height: 22px;
   flex-shrink: 0;
-  opacity: 0.8;
+  opacity: 1;
 }
 
-.sidebar-item.activo svg,
+.sidebar-item.activo svg {
+  width: 24px;
+  height: 24px;
+  opacity: 1;
+}
+
 .sidebar-item:hover svg {
   opacity: 1;
 }
 
 /* Pie del sidebar */
 .sidebar-pie {
-  padding: var(--espacio-md);
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 16px 0 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .sidebar-cerrar-sesion {
+  width: 44px;
+  height: 44px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 11px 16px;
-  border-radius: var(--radio-md);
-  color: var(--sidebar-texto);
-  font-size: var(--fuente-sm);
-  font-weight: 500;
-  width: 100%;
+  justify-content: center;
+  border-radius: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0;          /* Oculta texto */
+  line-height: 0;
+  padding: 0;
   background: none;
   border: none;
   cursor: pointer;
-  transition: background var(--transicion-rapida), color var(--transicion-rapida);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .sidebar-cerrar-sesion:hover {
-  background: rgba(220, 38, 38, 0.15);
-  color: #FCA5A5;
+  background: rgba(255, 80, 80, 0.25);
+  color: #FFFFFF;
+  transform: scale(1.08);
 }
 
 .sidebar-cerrar-sesion svg {
@@ -166,11 +181,11 @@
 /* ── Contenido Principal ── */
 .contenido-principal {
   flex: 1;
-  margin-left: var(--sidebar-ancho);
+  margin-left: 110px; /* 78px sidebar + 16px margen + 16px respiro */
   min-height: 100vh;
-  transition: margin-left var(--transicion-normal);
-  min-width: 0; /* CRÍTICO: Permite que el contenido flex se encoja */
-  width: calc(100% - var(--sidebar-ancho));
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 0;
+  width: calc(100% - 110px);
 }
 
 html, body {
@@ -179,9 +194,10 @@ html, body {
 }
 
 .contenido-header {
+  height: 64px;
   background: var(--color-blanco);
   border-bottom: 1px solid var(--color-borde);
-  padding: 16px 28px;
+  padding: 0 28px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -265,7 +281,7 @@ html, body {
 /* ── Responsive ── */
 @media (max-width: 1024px) {
   .sidebar {
-    transform: translateX(-100%);
+    transform: translateX(calc(-100% - 16px));
   }
 
   .sidebar.abierto {
@@ -274,6 +290,7 @@ html, body {
 
   .contenido-principal {
     margin-left: 0;
+    width: 100%;
   }
 
   .btn-menu-movil {

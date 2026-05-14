@@ -34,12 +34,12 @@
   background: var(--color-primario);
   color: white;
   border-radius: var(--radio-lg);
-  padding: 12px 24px;
+  padding: 8px 22px;
   display: inline-flex;
   align-items: center;
   gap: 10px;
   font-weight: 600;
-  font-size: var(--fuente-sm);
+  font-size: 0.9rem;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.15);
 }
@@ -273,10 +273,10 @@ select.md-input {
 }
 
 .btn-text-md {
-  padding: 10px 24px;
+  padding: 8px 22px;
   border-radius: 100px;
   font-weight: 600;
-  font-size: var(--fuente-sm);
+  font-size: 0.9rem;
   color: var(--color-primario);
   background: transparent;
   transition: background 0.2s;
@@ -287,10 +287,10 @@ select.md-input {
 }
 
 .btn-filled-md {
-  padding: 10px 28px;
+  padding: 8px 22px;
   border-radius: 100px;
   font-weight: 600;
-  font-size: var(--fuente-sm);
+  font-size: 0.9rem;
   color: white;
   background: var(--color-primario);
   box-shadow: var(--sombra-sm);

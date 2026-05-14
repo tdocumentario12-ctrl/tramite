@@ -13,10 +13,10 @@
 }
 
 .tab-btn {
-  padding: 12px 24px;
-  border-radius: 12px;
+  padding: 8px 22px;
+  border-radius: 10px;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   background: #E2E8F0;
   color: var(--color-texto-secundario);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -229,9 +229,10 @@ select.campo-input {
 .btn-cancelar {
   background: #F1F5F9;
   color: var(--color-texto-secundario);
-  padding: 12px 30px;
-  border-radius: 12px;
+  padding: 8px 22px;
+  border-radius: 10px;
   font-weight: 600;
+  font-size: 0.9rem;
   transition: all 0.2s;
 }
 
@@ -243,10 +244,11 @@ select.campo-input {
 .btn-guardar-tramite {
   background: var(--color-primario);
   color: white;
-  padding: 12px 36px;
-  border-radius: 12px;
+  padding: 8px 22px;
+  border-radius: 10px;
   font-weight: 700;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+  font-size: 0.9rem;
+  box-shadow: 0 4px 10px rgba(2, 132, 199, 0.15);
   transition: all 0.2s;
   display: flex;
   align-items: center;

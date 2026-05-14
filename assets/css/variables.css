@@ -101,14 +101,14 @@ table th, table td {
   --color-borde: #E2E8F0;
   --color-borde-hover: #CBD5E1;
 
-  /* Sidebar */
-  --sidebar-ancho: 260px;
-  --sidebar-ancho-colapsado: 70px;
-  --sidebar-bg: #1E293B;
-  --sidebar-texto: #CBD5E1;
-  --sidebar-texto-activo: #FFFFFF;
-  --sidebar-hover: rgba(255, 255, 255, 0.08);
-  --sidebar-activo: rgba(2, 132, 199, 0.2);
+  /* Sidebar Flotante */
+  --sidebar-ancho: 78px;
+  --sidebar-ancho-colapsado: 78px;
+  --sidebar-bg: linear-gradient(180deg, #1E88E5 0%, #1565C0 100%);
+  --sidebar-texto: rgba(255, 255, 255, 0.7);
+  --sidebar-texto-activo: #1E88E5;
+  --sidebar-hover: rgba(255, 255, 255, 0.15);
+  --sidebar-activo: #FFFFFF;
 
   /* Nueva Escala Dinámica (Base 12px) */
   --fuente-xs: 0.833rem;  /* 10px - MÍNIMO */
