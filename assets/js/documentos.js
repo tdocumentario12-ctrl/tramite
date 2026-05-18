@@ -66,6 +66,15 @@ const Documentos = {
             </div>
 
             <div class="campo-grupo">
+              <label class="campo-label">Origen de Registro</label>
+              <select id="f-origen" class="campo-input">
+                <option value="">Todos</option>
+                <option value="Emitido">Emitidos</option>
+                <option value="Derivado">Derivados</option>
+              </select>
+            </div>
+
+            <div class="campo-grupo">
               <label class="campo-label">Desde</label>
               <input type="date" id="f-desde" class="campo-input">
             </div>
@@ -155,12 +164,15 @@ const Documentos = {
     body.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:40px;"><div class="spinner primario"></div></td></tr>';
 
     try {
-      let query = clienteSupabase.from('documentos').select('*, perfiles(nombre_completo)', { count: 'exact' });
+      let query = clienteSupabase.from('documentos').select('*, usuario_registro:perfiles!usuario_registro(nombre_completo), firmante:perfiles!firmante_id(nombre_completo, cargo, firma_url)', { count: 'exact' });
       const busqueda = document.getElementById('f-busqueda').value;
       if (busqueda) query = query.or(`numero_documento.ilike.%${busqueda}%,remitente.ilike.%${busqueda}%`);
 
       const tipo = document.getElementById('f-tipo').value;
       if (tipo) query = query.eq('tipo_documento', tipo);
+
+      const origen = document.getElementById('f-origen').value;
+      if (origen) query = query.eq('tipo_registro', origen);
 
       const desde = document.getElementById('f-desde').value;
       if (desde) query = query.gte('fecha_documento', desde);
@@ -181,7 +193,12 @@ const Documentos = {
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td><span style="font-weight:700; color:var(--color-primario);">${doc.numero_documento}</span></td>
-          <td><span class="badge-tipo">${doc.tipo_documento}</span></td>
+          <td>
+            <span class="badge-tipo">${doc.tipo_documento}</span>
+            <div style="margin-top: 5px;">
+              <span class="badge-tipo badge-${(doc.tipo_registro || 'Emitido').toLowerCase()}">${doc.tipo_registro || 'Emitido'}</span>
+            </div>
+          </td>
           <td>${doc.remitente}</td>
           <td>${doc.destinatario}</td>
           <td>${doc.fecha_documento}</td>
@@ -256,9 +273,12 @@ const Documentos = {
             <div><span style="font-size: 0.6rem; color: #94A3B8; display:block;">DESCRIPCIÓN</span><p style="font-size: 0.8rem; color: #475569; line-height: 1.5; margin-top:5px;">${doc.descripcion || 'Sin descripción.'}</p></div>
           </div>
 
-          <div style="background: #F1F5F9; padding: 12px 15px; border-radius: 10px; display:flex; justify-content: space-between; align-items: center; border: 1px solid #E2E8F0;">
-             <div><small style="color: #64748B; font-size: 0.55rem; font-weight:700; text-transform: uppercase;">REGISTRADO POR</small><div style="font-weight: 700; font-size: 0.8rem;">${doc.perfiles?.nombre_completo || 'Usuario'}</div></div>
-             <div style="text-align:right;"><small style="color: #64748B; font-size: 0.55rem; font-weight:700; text-transform: uppercase;">FECHA</small><div style="font-weight: 700; font-size: 0.8rem;">${new Date(doc.creado_en).toLocaleDateString()}</div></div>
+          <div style="background: #F1F5F9; padding: 12px 15px; border-radius: 10px; display:flex; flex-direction: column; gap: 8px; border: 1px solid #E2E8F0;">
+             <div style="display:flex; justify-content: space-between; align-items: center;">
+               <div><small style="color: #64748B; font-size: 0.55rem; font-weight:700; text-transform: uppercase;">AUTOR / FIRMANTE</small><div style="font-weight: 700; font-size: 0.8rem; color: #0284C7;">${doc.firmante?.nombre_completo || doc.usuario_registro?.nombre_completo || 'Usuario'}</div></div>
+               <div style="text-align:right;"><small style="color: #64748B; font-size: 0.55rem; font-weight:700; text-transform: uppercase;">FECHA</small><div style="font-weight: 700; font-size: 0.8rem;">${new Date(doc.creado_en).toLocaleDateString()}</div></div>
+             </div>
+             <div style="border-top: 1px dashed #CBD5E1; padding-top: 6px;"><small style="color: #64748B; font-size: 0.52rem; font-weight:700; text-transform: uppercase;">ELABORADO POR</small><span style="font-size: 0.72rem; color: #475569; margin-left: 8px;">${doc.usuario_registro?.nombre_completo || 'Usuario'}</span></div>
           </div>
         </div>
       </div>
@@ -273,12 +293,11 @@ const Documentos = {
     modal.classList.add('visible');
   },
 
-  /* ── Cargar firma digital del usuario logueado ── */
-  async _cargarFirmaUsuario() {
+  /* ── Cargar firma digital de un usuario específico ── */
+  async _cargarFirmaUsuario(usuarioId) {
     try {
-      const { data: { user } } = await clienteSupabase.auth.getUser();
-      if (!user) return null;
-      const { data } = await clienteSupabase.from('perfiles').select('firma_url, nombre_completo, cargo').eq('id', user.id).single();
+      if (!usuarioId) return null;
+      const { data } = await clienteSupabase.from('perfiles').select('firma_url, nombre_completo, cargo').eq('id', usuarioId).single();
       return data || null;
     } catch (e) { return null; }
   },
@@ -288,7 +307,10 @@ const Documentos = {
     const { jsPDF } = window.jspdf;
     const pdf = new jsPDF('p', 'mm', 'a4');
     const mIzq = 27, mDer = 27, anchoUtil = 210 - mIzq - mDer;
-    const perfil = await this._cargarFirmaUsuario();
+    
+    // Cargar la firma del firmante asignado, fallback a usuario_registro
+    const firmanteId = doc.firmante_id || doc.usuario_registro;
+    const perfil = await this._cargarFirmaUsuario(firmanteId);
 
     try {
       // --- Logo ---
@@ -391,7 +413,8 @@ const Documentos = {
 
   /* ── Exportar Word (.doc) ── */
   async generarWord(doc) {
-    const perfil = await this._cargarFirmaUsuario();
+    const firmanteId = doc.firmante_id || doc.usuario_registro;
+    const perfil = await this._cargarFirmaUsuario(firmanteId);
     try {
       let firmaHtml = '';
       if (perfil && perfil.firma_url) {
@@ -457,7 +480,7 @@ const Documentos = {
   cerrarModal() { document.getElementById('modal-doc-detalle').classList.remove('visible'); },
 
   limpiarFiltros() {
-    ['f-busqueda','f-tipo','f-desde','f-hasta'].forEach(function(id) { document.getElementById(id).value = ''; });
+    ['f-busqueda','f-tipo','f-origen','f-desde','f-hasta'].forEach(function(id) { document.getElementById(id).value = ''; });
     this.cargarDocumentos(1);
   },
 

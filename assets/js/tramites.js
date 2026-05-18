@@ -74,9 +74,47 @@ const Tramites = {
     if (this._tabActual === 'emitir') {
       this._renderizarFormEmitir(zonaContenido);
       await this._generarCorrelativo();
+      await this._cargarFirmantesSelect();
     } else {
       this._renderizarFormDerivar(zonaContenido);
       await this._verificarDerivacionPendiente();
+    }
+  },
+
+  /**
+   * Cargar la lista de usuarios/firmantes activos para el selector
+   */
+  async _cargarFirmantesSelect() {
+    const select = document.getElementById('t-firmante');
+    if (!select) return;
+
+    try {
+      const { data: perfiles, error } = await clienteSupabase
+        .from('perfiles')
+        .select('id, nombre_completo, cargo, firma_url')
+        .eq('activo', true)
+        .order('nombre_completo', { ascending: true });
+
+      if (error) throw error;
+
+      if (!perfiles || perfiles.length === 0) {
+        select.innerHTML = '<option value="" disabled>No hay firmantes disponibles</option>';
+        return;
+      }
+
+      select.innerHTML = perfiles.map(p => {
+        const tieneFirma = p.firma_url ? '✍️ ' : '⚠️ (Sin firma) ';
+        const cargoStr = p.cargo ? ` - ${p.cargo}` : '';
+        return `<option value="${p.id}">${tieneFirma}${p.nombre_completo}${cargoStr}</option>`;
+      }).join('');
+
+      // Seleccionar por defecto al usuario logueado actualmente
+      if (this._perfil && this._perfil.id) {
+        select.value = this._perfil.id;
+      }
+    } catch (err) {
+      console.error('Error al cargar firmantes:', err);
+      select.innerHTML = '<option value="" disabled>Error al cargar firmantes</option>';
     }
   },
 
@@ -119,9 +157,6 @@ const Tramites = {
     }
   },
 
-  /**
-   * Formulario 1: Emitir / Registrar Documento
-   */
   _renderizarFormEmitir(zona) {
     zona.innerHTML = `
       <div class="tramite-card">
@@ -155,6 +190,12 @@ const Tramites = {
                   <option value="MEDIA" selected>Media</option>
                   <option value="ALTA">Alta</option>
                   <option value="URGENTE">Urgente</option>
+                </select>
+              </div>
+              <div class="campo-grupo" style="grid-column: span 2;">
+                <label class="campo-label">Autor / Firmante del Documento</label>
+                <select id="t-firmante" class="campo-input" required>
+                  <option value="" disabled selected>Cargando firmantes...</option>
                 </select>
               </div>
             </div>
@@ -434,7 +475,8 @@ const Tramites = {
         asunto: document.getElementById('t-asunto').value,
         descripcion: document.getElementById('t-descripcion').value,
         estado: 'REGISTRADO',
-        usuario_id: this._perfil.id
+        usuario_id: this._perfil.id,
+        firmante_id: document.getElementById('t-firmante').value || null
       };
       if (this._archivoAdjunto) {
         const path = `tramites/${Date.now()}.pdf`;

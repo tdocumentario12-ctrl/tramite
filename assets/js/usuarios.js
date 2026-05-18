@@ -171,6 +171,18 @@ const Usuarios = {
   },
 
   /**
+   * Convertir un archivo a Base64
+   */
+  _fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+      reader.readAsDataURL(file);
+    });
+  },
+
+  /**
    * Vincular eventos del DOM
    */
   _vincularEventos() {
@@ -361,14 +373,17 @@ const Usuarios = {
           cargo: cargo || null
         };
 
-        // Subir firma si se seleccionó una nueva
+        // Convertir firma a Base64 si se seleccionó una nueva
         if (firmaInput && firmaInput.files.length > 0) {
-          const file = firmaInput.files[0];
-          const ext = file.name.split('.').pop();
-          const path = 'firmas/' + id + '.' + ext;
-          const { error: upErr } = await clienteSupabase.storage.from('documentos').upload(path, file, { upsert: true });
-          if (upErr) { console.error(upErr); Toast.error('Error al subir firma'); return; }
-          updateData.firma_url = clienteSupabase.storage.from('documentos').getPublicUrl(path).data.publicUrl;
+          try {
+            updateData.firma_url = await this._fileToBase64(firmaInput.files[0]);
+          } catch (upErr) { 
+            console.error(upErr); 
+            Toast.error('Error al procesar la imagen de la firma'); 
+            btn.disabled = false; spinner.style.display = 'none'; texto.style.display = 'block';
+            this._guardando = false;
+            return; 
+          }
         }
 
         const { error } = await clienteSupabase.from('perfiles').update(updateData).eq('id', id);
@@ -392,7 +407,23 @@ const Usuarios = {
           return;
         }
 
-        Toast.exito('Usuario creado y activo correctamente.');
+        const nuevoId = data.user_id;
+
+        // ── ACTUALIZAR el perfil recién creado con cargo y firma ──
+        const extraData = { cargo: cargo || null };
+        if (firmaInput && firmaInput.files.length > 0) {
+          try {
+            extraData.firma_url = await this._fileToBase64(firmaInput.files[0]);
+          } catch (upErr) { 
+            console.error('Error al procesar firma:', upErr); 
+          }
+        }
+
+        if (extraData.cargo || extraData.firma_url) {
+          await clienteSupabase.from('perfiles').update(extraData).eq('id', nuevoId);
+        }
+
+        Toast.exito('Usuario creado y configurado correctamente.');
       }
 
       document.getElementById('modal-usuario').classList.remove('visible');

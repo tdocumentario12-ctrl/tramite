@@ -87,12 +87,37 @@ const App = {
       });
     });
 
-    // Cerrar sesión
-    document.getElementById('btn-cerrar-sesion').addEventListener('click', async () => {
-      if (confirm('¿Está seguro de cerrar sesión?')) {
+    // Cerrar sesión (Modal Premium)
+    const modalLogout = document.getElementById('modal-confirm-logout');
+    const btnCerrarSesion = document.getElementById('btn-cerrar-sesion');
+    const btnLogoutCancelar = document.getElementById('btn-logout-cancelar');
+    const btnLogoutConfirmar = document.getElementById('btn-logout-confirmar');
+
+    if (btnCerrarSesion && modalLogout) {
+      btnCerrarSesion.addEventListener('click', () => {
+        modalLogout.classList.add('visible');
+      });
+
+      const ocultarModal = () => modalLogout.classList.remove('visible');
+
+      btnLogoutCancelar?.addEventListener('click', ocultarModal);
+      modalLogout.addEventListener('click', (e) => {
+        if (e.target === modalLogout) ocultarModal();
+      });
+
+      btnLogoutConfirmar?.addEventListener('click', async () => {
+        btnLogoutConfirmar.disabled = true;
+        btnLogoutConfirmar.textContent = 'Saliendo...';
         await Auth.cerrarSesion();
-      }
-    });
+      });
+
+      // Cerrar también con tecla Escape
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modalLogout.classList.contains('visible')) {
+          ocultarModal();
+        }
+      });
+    }
 
     // Botón menú móvil
     document.getElementById('btn-menu-movil').addEventListener('click', () => {
