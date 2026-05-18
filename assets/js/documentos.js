@@ -416,10 +416,51 @@ const Documentos = {
     const firmanteId = doc.firmante_id || doc.usuario_registro;
     const perfil = await this._cargarFirmaUsuario(firmanteId);
     try {
+      // 1. Resolver la URL absoluta del Logo para que Word lo cargue desde el servidor local (sin usar Base64, el cual Word bloquea en HTML simple)
+      const logoUrl = window.location.origin + '/assets/img/Logo.jpg';
+
+      // 2. Resolver la Firma digital con su URL absoluta de Supabase (Saneamiento dinámico si está en Base64)
       let firmaHtml = '';
       if (perfil && perfil.firma_url) {
-        firmaHtml = '<p style="margin:0;"><img src="' + perfil.firma_url + '" width="120" height="60"></p>';
+        let firmaUrl = perfil.firma_url;
+        
+        // Si la firma está en la BD como Base64 (que Word bloquea en HTML), la migramos al instante a Storage de forma transparente
+        if (firmaUrl.startsWith('data:image/')) {
+          try {
+            const partes = firmaUrl.split(';');
+            const mimeType = partes[0].split(':')[1];
+            const extension = mimeType.split('/')[1] || 'png';
+            const base64Data = partes[1].split(',')[1];
+            
+            // Decodificar Base64 a bytes
+            const byteCharacters = atob(base64Data);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+              byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: mimeType });
+            
+            // Subir a Supabase Storage
+            const path = `firmas/firma_${firmanteId}_saneada.${extension}`;
+            await clienteSupabase.storage.from('documentos').upload(path, blob, { upsert: true });
+            
+            // Obtener URL pública
+            const publicUrl = clienteSupabase.storage.from('documentos').getPublicUrl(path).data.publicUrl;
+            
+            // Actualizar la base de datos en segundo plano
+            await clienteSupabase.from('perfiles').update({ firma_url: publicUrl }).eq('id', firmanteId);
+            
+            firmaUrl = publicUrl;
+            console.log('Firma Base64 saneada y migrada exitosamente a Storage:', publicUrl);
+          } catch (me) {
+            console.error('Error al migrar firma Base64 a Storage:', me);
+          }
+        }
+        
+        firmaHtml = '<p style="margin:0;"><img src="' + firmaUrl + '" width="120" height="60"></p>';
       }
+
       let firmante = '';
       if (perfil && perfil.nombre_completo) {
         firmante = '<p style="margin:0;"><b>_________________________</b></p>' +
@@ -427,13 +468,24 @@ const Documentos = {
           (perfil.cargo ? '<p style="margin:0;">' + perfil.cargo + '</p>' : '');
       }
 
+      // 3. Cabecera con tabla para alinear logo y lema (con URL absoluta)
+      const cabeceraHtml = '<table border="0" cellpadding="0" cellspacing="0" style="width: 100%; margin-bottom: 24pt;">' +
+        '<tr>' +
+          '<td style="width: 70px; vertical-align: middle;">' +
+            '<img src="' + logoUrl + '" width="55" height="55" style="display: block;">' +
+          '</td>' +
+          '<td style="text-align: center; vertical-align: middle; padding-right: 70px;">' +
+            '<p style="margin: 0; font-style: italic; font-size: 9pt; color: #555;">\u201cAño de la recuperación y consolidación de la economía peruana\u201d</p>' +
+          '</td>' +
+        '</tr>' +
+      '</table>';
+
       const source = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">' +
         '<head><meta charset="utf-8"><title>' + doc.numero_documento + '</title>' +
         '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml><![endif]-->' +
         '<style>' +
         '@page { size: A4; margin: 2.5cm 2.7cm 1cm 2.7cm; }' +
         'body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.6; color: #000; }' +
-        '.lema { text-align: center; font-style: italic; font-size: 9pt; color: #555; margin-bottom: 24pt; }' +
         '.fecha { text-align: right; font-size: 11pt; margin-bottom: 12pt; }' +
         '.titulo { font-size: 13pt; font-weight: bold; text-decoration: underline; margin-bottom: 14pt; }' +
         '.campo { font-size: 11pt; margin: 0; line-height: 1.4; }' +
@@ -443,7 +495,7 @@ const Documentos = {
         '.cuerpo { font-size: 11pt; text-align: justify; line-height: 1.6; margin-bottom: 20pt; }' +
         '.cierre { font-size: 11pt; margin-top: 24pt; }' +
         '</style></head><body>' +
-        '<p class="lema">\u201cAño de la recuperación y consolidación de la economía peruana\u201d</p>' +
+        cabeceraHtml +
         '<p class="fecha">Chincha, ' + this._formatearFechaLarga(doc.fecha_documento) + '</p>' +
         '<p class="titulo">' + doc.tipo_documento + ' ' + doc.numero_documento + '</p>' +
         '<p class="campo"><span class="campo-label">Señor</span>: &nbsp;&nbsp;&nbsp;' + doc.destinatario.toUpperCase() + '</p>' +

@@ -154,7 +154,9 @@ const App = {
       'dashboard': 'Dashboard',
       'usuarios': 'Usuarios',
       'registrar-tramite': 'Registrar Trámite',
-      'documentos': 'Gestión de Documentos'
+      'documentos': 'Gestión de Documentos',
+      'areas': 'Gestión de Áreas',
+      'reportes': 'Reportes y Estadísticas'
     };
     document.getElementById('titulo-pagina').textContent = titulos[seccion] || 'Dashboard';
 
@@ -182,6 +184,12 @@ const App = {
           break;
         case 'documentos':
           await Documentos.renderizar(contenedor, this._perfil);
+          break;
+        case 'areas':
+          await Areas.renderizar(contenedor, this._perfil);
+          break;
+        case 'reportes':
+          await Reportes.renderizar(contenedor, this._perfil);
           break;
         default:
           await Dashboard.renderizar(contenedor, this._perfil);

@@ -7,23 +7,7 @@ const Tramites = {
   _contenedor: null,
   _archivoAdjunto: null,
   _tabActual: 'emitir', // 'emitir' o 'derivar'
-  _dataAreas: {
-    "Administración General": { nombre: "DRA. ELENA ESTHER BORJAS MAURICIO", cargo: "Administradora del Hospital San José de Chincha" },
-    "Cirugía": { nombre: "M.C. BRIAN DONAYRE PALOMINO", cargo: "Jefe del Departamento de Cirugía" },
-    "Pediatría": { nombre: "M.C. VICTOR VARGAS URIBE", cargo: "Jefe del Departamento de Pediatría" },
-    "Medicina Interna": { nombre: "M.C. FERNANDO CAGNA PUPPI", cargo: "Jefe del Departamento de Medicina" },
-    "Ginecología y Obstetricia": { nombre: "M.C. KAROL RAMOS JEREZ", cargo: "Jefe del Departamento de Gineco-Obstetricia" },
-    "Patología Clínica y Anatomía Patológica": { nombre: "M.C. JACQUELINE TELLO ALMEYDA", cargo: "Jefe del Departamento de Patología Clínica y Anatomía" },
-    "Radiología e Imágenes": { nombre: "M.C. BETTY CABRERA BENAVIDES", cargo: "Jefe del Departamento de Radiodiagnóstico por Imágenes" },
-    "Centro Quirúrgico y Anestesiología": { nombre: "M.C. LUCIO CERVANTES HUAMANI", cargo: "Jefe del Departamento de Anestesiología y Centro Quirúrgico" },
-    "Emergencia y UCI": { nombre: "M.C. LUIS ANGEL CHIRINOS HOYOS", cargo: "Jefe del Departamento de Emergencia y Cuidados Críticos" },
-    "Enfermería": { nombre: "LIC. INES QUISPE PADILLA", cargo: "Jefe del Departamento de Enfermería" },
-    "Medicina Especializada": { nombre: "M.C. MARCO ANTONIO GUERRERO ANGULO", cargo: "Jefe del Servicio de Medicina Especializada - Departamento de Medicina" },
-    "Neonatología": { nombre: "M.C. EUSEBIO VITALIO ALFARO", cargo: "Jefe del Servicio de Neonatología del Departamento de Pediatría" },
-    "Cirugía Especializada": { nombre: "M.C. Jefe del Servicio de Cirugía Especializada", cargo: "Jefe del Servicio de Cirugía Especializada" },
-    "Emergencia": { nombre: "M.C. CARLOS ÑAHUIS PALOMINO", cargo: "Jefe del Servicio de Emergencia" },
-    "Farmacia": { nombre: "Q.F. KERIM SANCHEZ MENDOZA", cargo: "Jefe del Servicio de Farmacia" }
-  },
+  _areasList: [],
 
   /**
    * Inicializar y renderizar vista principal de trámites
@@ -31,6 +15,16 @@ const Tramites = {
   async renderizar(contenedor, perfil) {
     this._perfil = perfil;
     this._contenedor = contenedor;
+
+    // Cargar la lista dinámica de áreas de Supabase
+    try {
+      const { data, error } = await clienteSupabase.from('areas').select('*').order('nombre', { ascending: true });
+      if (error) throw error;
+      this._areasList = data || [];
+    } catch (e) {
+      console.error('Error al cargar áreas de la base de datos:', e);
+      this._areasList = [];
+    }
 
     contenedor.innerHTML = `
       <div class="tramites-container">
@@ -212,21 +206,7 @@ const Tramites = {
                 <label class="campo-label">Área</label>
                 <select id="t-area" class="campo-input" required>
                   <option value="" disabled selected>Seleccione el área</option>
-                  <option value="Administración General">Administración General</option>
-                  <option value="Cirugía">Cirugía</option>
-                  <option value="Pediatría">Pediatría</option>
-                  <option value="Medicina Interna">Medicina Interna</option>
-                  <option value="Ginecología y Obstetricia">Ginecología y Obstetricia</option>
-                  <option value="Patología Clínica y Anatomía Patológica">Patología Clínica y Anatomía Patológica</option>
-                  <option value="Radiología e Imágenes">Radiología e Imágenes</option>
-                  <option value="Centro Quirúrgico y Anestesiología">Centro Quirúrgico y Anestesiología</option>
-                  <option value="Emergencia y UCI">Emergencia y UCI</option>
-                  <option value="Enfermería">Enfermería</option>
-                  <option value="Medicina Especializada">Medicina Especializada</option>
-                  <option value="Neonatología">Neonatología</option>
-                  <option value="Cirugía Especializada">Cirugía Especializada</option>
-                  <option value="Emergencia">Emergencia</option>
-                  <option value="Farmacia">Farmacia</option>
+                  ${this._areasList.map(a => `<option value="${a.nombre}">${a.nombre}</option>`).join('')}
                 </select>
               </div>
               <div class="campo-grupo">
@@ -320,6 +300,10 @@ const Tramites = {
                   <option value="URGENTE">Urgente</option>
                 </select>
               </div>
+              <div class="campo-grupo">
+                <label class="campo-label">Remitente</label>
+                <input type="text" id="d-remitente" class="campo-input" placeholder="Nombre o institución" required>
+              </div>
             </div>
             <div class="campo-grupo full" style="margin-top:15px;">
               <label class="campo-label">Asunto</label>
@@ -334,23 +318,7 @@ const Tramites = {
                 <label class="campo-label">Área Destino</label>
                 <select id="d-area" class="campo-input" required>
                   <option value="" disabled selected>Seleccione el área</option>
-                  <option value="Administración General">Administración General</option>
-                  <option value="Cirugía">Cirugía</option>
-                  <option value="Pediatría">Pediatría</option>
-                  <option value="Medicina Interna">Medicina Interna</option>
-                  <option value="Ginecología y Obstetricia">Ginecología y Obstetricia</option>
-                  <option value="Patología Clínica y Anatomía Patológica">Patología Clínica y Anatomía Patológica</option>
-                  <option value="Radiología e Imágenes">Radiología e Imágenes</option>
-                  <option value="Centro Quirúrgico y Anestesiología">Centro Quirúrgico y Anestesiología</option>
-                  <option value="Emergencia y UCI">Emergencia y UCI</option>
-                  <option value="Enfermería">Enfermería</option>
-                  <option value="Medicina Especializada">Medicina Especializada</option>
-                  <option value="Neonatología">Neonatología</option>
-                  <option value="Cirugía Especializada">Cirugía Especializada</option>
-                  <option value="Emergencia">Emergencia</option>
-                  <option value="Farmacia">Farmacia</option>
-                  <option value="Unidad de Seguros Privados">Unidad de Seguros Privados</option>
-                  <option value="FISSAL">FISSAL</option>
+                  ${this._areasList.map(a => `<option value="${a.nombre}">${a.nombre}</option>`).join('')}
                 </select>
               </div>
               <div class="campo-grupo">
@@ -402,6 +370,9 @@ const Tramites = {
       document.getElementById('d-fecha-doc').value = data.fecha_documento;
       document.getElementById('d-prioridad-doc').value = data.prioridad;
       document.getElementById('d-asunto-doc').value = data.asunto;
+      if (document.getElementById('d-remitente')) {
+        document.getElementById('d-remitente').value = data.remitente || '';
+      }
       
       // Guardar URL del archivo si existe para no perderlo al derivar
       this._archivoPendienteDerivar = data.archivo_pdf;
@@ -429,10 +400,10 @@ const Tramites = {
     // Autocomplete
     const selectArea = document.getElementById('t-area');
     selectArea?.addEventListener('change', () => {
-      const data = this._dataAreas[selectArea.value];
-      if (data) {
-        document.getElementById('t-destinatario').value = data.nombre;
-        document.getElementById('t-cargo').value = data.cargo;
+      const areaInfo = this._areasList.find(a => a.nombre === selectArea.value);
+      if (areaInfo) {
+        document.getElementById('t-destinatario').value = areaInfo.responsable;
+        document.getElementById('t-cargo').value = areaInfo.cargo;
       }
     });
   },
@@ -443,10 +414,10 @@ const Tramites = {
     // Autocomplete
     const selectArea = document.getElementById('d-area');
     selectArea?.addEventListener('change', () => {
-      const data = this._dataAreas[selectArea.value];
-      if (data) {
-        document.getElementById('d-responsable').value = data.nombre;
-        document.getElementById('d-cargo-resp').value = data.cargo;
+      const areaInfo = this._areasList.find(a => a.nombre === selectArea.value);
+      if (areaInfo) {
+        document.getElementById('d-responsable').value = areaInfo.responsable;
+        document.getElementById('d-cargo-resp').value = areaInfo.cargo;
       }
     });
   },
@@ -513,7 +484,7 @@ const Tramites = {
         fecha: document.getElementById('d-fecha-doc').value,
         prioridad: document.getElementById('d-prioridad-doc').value,
         asunto: document.getElementById('d-asunto-doc').value,
-        remitente: 'DERIVACIÓN MANUAL',
+        remitente: document.getElementById('d-remitente').value,
         destinatario: document.getElementById('d-responsable').value,
         cargo_destinatario: document.getElementById('d-cargo-resp').value,
         area: document.getElementById('d-area').value,

@@ -15,28 +15,32 @@ const Auth = {
       throw new Error('Error de configuración del sistema. Recargue la página.');
     }
 
-    // 1. Buscar el email asociado al nombre de usuario mediante Edge Function (Rate-Limited)
-    const functionUrl = 'https://cizujpnppgazwofczbcg.supabase.co/functions/v1/auth-username';
-    const response = await fetch(functionUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
-      },
-      body: JSON.stringify({ username: nombreUsuario })
-    });
+    let emailData = nombreUsuario;
 
-    const result = await response.json();
+    // Si el usuario ingresó un nombre de usuario (no contiene '@'), resolvemos su correo mediante Edge Function
+    if (!nombreUsuario.includes('@')) {
+      const functionUrl = 'https://cizujpnppgazwofczbcg.supabase.co/functions/v1/auth-username';
+      const response = await fetch(functionUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({ username: nombreUsuario })
+      });
 
-    if (!response.ok) {
-      console.error('[SIS] Error en Edge Function:', result);
-      if (response.status === 429) {
-        throw new Error('Demasiados intentos. Intente nuevamente en unos minutos.');
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error('[SIS] Error en Edge Function:', result);
+        if (response.status === 429) {
+          throw new Error('Demasiados intentos. Intente nuevamente en unos minutos.');
+        }
+        throw new Error(result.error || 'Usuario no encontrado.');
       }
-      throw new Error(result.error || 'Usuario no encontrado.');
-    }
 
-    const emailData = result.email;
+      emailData = result.email;
+    }
 
     // 2. Autenticar con Supabase Auth usando el email (el resto sigue igual)
     const { data, error } = await clienteSupabase.auth.signInWithPassword({

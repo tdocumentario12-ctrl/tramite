@@ -1,0 +1,217 @@
+/* ============================================
+   SISTEMA SIS — Reportes y Estadísticas (CSS Premium)
+   ============================================ */
+
+.rep-container {
+  animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Cabecera de Reportes ── */
+.rep-cabecera {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: var(--espacio-xl);
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.cabecera-info-rep h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--color-texto);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.rep-subtitulo {
+  color: var(--color-texto-secundario);
+  font-size: var(--fuente-sm);
+  margin-top: 4px;
+}
+
+.btn-exportar-rep {
+  background: #16A34A; /* Verde esmeralda premium */
+  color: white;
+  border-radius: var(--radio-lg);
+  padding: 10px 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(22, 163, 74, 0.15);
+  border: none;
+  cursor: pointer;
+}
+
+.btn-exportar-rep:hover {
+  background: #15803D;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(22, 163, 74, 0.25);
+}
+
+/* ── Filtros Analíticos ── */
+.rep-filtros {
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 28px;
+  border: 1px solid var(--color-borde);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.rep-filtros-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.rep-filtros-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* ── Tarjetas de Estadísticas Avanzadas ── */
+.rep-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.rep-card {
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+  border: 1px solid var(--color-borde);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+}
+
+.rep-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.05);
+}
+
+.rep-card-icon {
+  width: 54px;
+  height: 54px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.rep-card-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.rep-card-valor {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.1;
+}
+
+.rep-card-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #64748B;
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Variantes de Tarjetas */
+.rep-total { border-left: 5px solid #0284C7; }
+.rep-total .rep-card-icon { background: #E0F2FE; color: #0284C7; }
+
+.rep-proceso { border-left: 5px solid #D97706; }
+.rep-proceso .rep-card-icon { background: #FEF3C7; color: #D97706; }
+
+.rep-atendido { border-left: 5px solid #16A34A; }
+.rep-atendido .rep-card-icon { background: #DCFCE7; color: #16A34A; }
+
+.rep-eficiencia { border-left: 5px solid #8B5CF6; }
+.rep-eficiencia .rep-card-icon { background: #F5F3FF; color: #8B5CF6; }
+
+/* ── Sección de Gráficos Nativos Premium ── */
+.rep-graficos-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 24px;
+}
+
+.grafico-card {
+  background: white;
+  border-radius: 24px;
+  padding: 28px;
+  border: 1px solid var(--color-borde);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+}
+
+.grafico-titulo {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #F1F5F9;
+  padding-bottom: 12px;
+}
+
+/* Filas de la Barra Distribuidora */
+.grafico-fila {
+  margin-bottom: 18px;
+}
+
+.grafico-fila-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.grafico-barra-bg {
+  width: 100%;
+  height: 10px;
+  background: #F1F5F9;
+  border-radius: 9999px;
+  overflow: hidden;
+}
+
+.grafico-barra-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Colores de Barras */
+.fill-celeste { background: linear-gradient(90deg, #0ea5e9, #38bdf8); }
+.fill-verde { background: linear-gradient(90deg, #10b981, #34d399); }
+.fill-naranja { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.fill-rojo { background: linear-gradient(90deg, #ef4444, #f87171); }
+.fill-purpura { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+
+/* Adaptabilidad para móviles */
+@media (max-width: 768px) {
+  .rep-graficos-container {
+    grid-template-columns: 1fr;
+  }
+  .rep-filtros-grid {
+    grid-template-columns: 1fr;
+  }
+}

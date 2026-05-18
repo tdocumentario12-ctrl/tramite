@@ -265,17 +265,20 @@ html, body {
 
 /* ── Overlay móvil para sidebar ── */
 .sidebar-overlay {
-  display: none;
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.4);
   z-index: calc(var(--z-sidebar) - 1);
   opacity: 0;
-  transition: opacity var(--transicion-normal);
+  visibility: hidden;
+  transition: opacity var(--transicion-normal), visibility var(--transicion-normal);
+  pointer-events: none;
 }
 
 .sidebar-overlay.visible {
   opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 /* ── Responsive ── */
@@ -295,10 +298,6 @@ html, body {
 
   .btn-menu-movil {
     display: flex;
-  }
-
-  .sidebar-overlay {
-    display: block;
   }
 }
 

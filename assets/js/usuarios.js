@@ -373,13 +373,25 @@ const Usuarios = {
           cargo: cargo || null
         };
 
-        // Convertir firma a Base64 si se seleccionó una nueva
+        // Subir firma a Supabase Storage si se seleccionó una nueva
         if (firmaInput && firmaInput.files.length > 0) {
           try {
-            updateData.firma_url = await this._fileToBase64(firmaInput.files[0]);
+            const file = firmaInput.files[0];
+            const fileExt = file.name.split('.').pop();
+            const path = `firmas/firma_${id}_${Date.now()}.${fileExt}`;
+            
+            // Subir a Storage
+            const { error: uploadError } = await clienteSupabase.storage.from('documentos').upload(path, file, {
+              upsert: true
+            });
+            if (uploadError) throw uploadError;
+            
+            // Obtener URL pública
+            const publicUrl = clienteSupabase.storage.from('documentos').getPublicUrl(path).data.publicUrl;
+            updateData.firma_url = publicUrl;
           } catch (upErr) { 
             console.error(upErr); 
-            Toast.error('Error al procesar la imagen de la firma'); 
+            Toast.error('Error al subir la imagen de la firma a Storage'); 
             btn.disabled = false; spinner.style.display = 'none'; texto.style.display = 'block';
             this._guardando = false;
             return; 
@@ -413,9 +425,21 @@ const Usuarios = {
         const extraData = { cargo: cargo || null };
         if (firmaInput && firmaInput.files.length > 0) {
           try {
-            extraData.firma_url = await this._fileToBase64(firmaInput.files[0]);
+            const file = firmaInput.files[0];
+            const fileExt = file.name.split('.').pop();
+            const path = `firmas/firma_${nuevoId}_${Date.now()}.${fileExt}`;
+            
+            // Subir a Storage
+            const { error: uploadError } = await clienteSupabase.storage.from('documentos').upload(path, file, {
+              upsert: true
+            });
+            if (uploadError) throw uploadError;
+            
+            // Obtener URL pública
+            const publicUrl = clienteSupabase.storage.from('documentos').getPublicUrl(path).data.publicUrl;
+            extraData.firma_url = publicUrl;
           } catch (upErr) { 
-            console.error('Error al procesar firma:', upErr); 
+            console.error('Error al subir firma a Storage:', upErr); 
           }
         }
 
