@@ -79,12 +79,50 @@ const App = {
    * Vincular eventos de navegación
    */
   _vincularEventos() {
+    const sidebar = document.getElementById('sidebar');
+
     // Menú de navegación
     document.querySelectorAll('.sidebar-item[data-seccion]').forEach(item => {
       item.addEventListener('click', () => {
         const seccion = item.getAttribute('data-seccion');
         this._cargarSeccion(seccion);
+        
+        // Contraer sidebar al seleccionar una opción
+        if (sidebar) {
+          sidebar.classList.remove('expandido');
+        }
       });
+    });
+
+    // Vincular eventos de interacción dinámica con el sidebar
+    if (sidebar) {
+      // Expandir al pasar el mouse (Escritorio)
+      sidebar.addEventListener('mouseenter', () => {
+        if (window.innerWidth > 1024) {
+          sidebar.classList.add('expandido');
+        }
+      });
+
+      // Contraer al retirar el mouse (Escritorio)
+      sidebar.addEventListener('mouseleave', () => {
+        if (window.innerWidth > 1024) {
+          sidebar.classList.remove('expandido');
+        }
+      });
+
+      // Expandir al hacer clic o interactuar directamente (Escritorio/Tablet)
+      sidebar.addEventListener('click', () => {
+        if (window.innerWidth > 1024) {
+          sidebar.classList.add('expandido');
+        }
+      });
+    }
+
+    // Contraer sidebar al hacer clic en cualquier otra parte de la pantalla
+    document.addEventListener('click', (e) => {
+      if (sidebar && !sidebar.contains(e.target) && sidebar.classList.contains('expandido')) {
+        sidebar.classList.remove('expandido');
+      }
     });
 
     // Cerrar sesión (Modal Premium)
