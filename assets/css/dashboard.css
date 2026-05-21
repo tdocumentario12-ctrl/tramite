@@ -1,174 +1,261 @@
 /* ============================================
-   SISTEMA SIS — Dashboard
+   SISTEMA SIS — Dashboard (Minimalista + Interactivo)
    ============================================ */
 
-.dashboard-container {
+.dashboard-minimalista {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px 0 60px 0;
   animation: fadeIn 0.4s ease;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
+  from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Tarjeta de bienvenida */
-.bienvenida-card {
-  background: linear-gradient(135deg, var(--color-primario) 0%, #0369A1 100%);
-  border-radius: var(--radio-xl);
-  padding: var(--espacio-2xl);
-  color: var(--color-blanco);
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 24px rgba(2, 132, 199, 0.25);
+/* ── Cabecera Limpia ── */
+.dash-header-minimalista {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 48px;
+  border-bottom: 1px solid var(--color-borde);
+  padding-bottom: 24px;
 }
 
-.bienvenida-card::before {
-  content: '';
-  position: absolute;
-  top: -30%;
-  right: -10%;
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  pointer-events: none;
+.dash-saludo-contenedor {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.bienvenida-card::after {
-  content: '';
-  position: absolute;
-  bottom: -20%;
-  right: 20%;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
-  pointer-events: none;
+.dash-saludo {
+  font-size: 2.2rem;
+  font-weight: 300;
+  color: var(--color-texto);
+  margin: 0;
+  letter-spacing: -0.5px;
 }
 
-.bienvenida-saludo {
-  font-size: var(--fuente-base); /* 16px */
-  font-weight: 400;
-  opacity: 0.9;
-  margin-bottom: 4px;
+.dash-fecha {
+  font-size: 0.95rem;
+  color: var(--color-texto-secundario);
+  margin: 0;
 }
 
-.bienvenida-nombre {
-  font-size: var(--fuente-3xl);
-  font-weight: 800;
-  margin-bottom: 8px;
-  position: relative;
-  z-index: 1;
+/* ── Acciones (Botones Premium Interactivos) ── */
+.dash-acciones-sutiles {
+  display: flex;
+  gap: 12px;
 }
 
-.bienvenida-rol {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: rgba(255, 255, 255, 0.2);
-  padding: 6px 16px;
-  border-radius: var(--radio-full);
-  font-size: var(--fuente-xs); /* 14px */
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  backdrop-filter: blur(10px);
-  position: relative;
-  z-index: 1;
-}
-
-.bienvenida-fecha {
-  margin-top: var(--espacio-lg);
-  font-size: var(--fuente-sm);
-  opacity: 0.8;
-  position: relative;
-  z-index: 1;
+.btn-sutil {
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.bienvenida-fecha svg {
-  width: 16px;
-  height: 16px;
-}
-
-/* Info del sistema */
-.dashboard-info {
-  margin-top: var(--espacio-xl);
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: var(--espacio-md);
-}
-
-.info-card {
-  background: var(--color-fondo-card);
+  background: var(--color-blanco);
   border: 1px solid var(--color-borde);
-  border-radius: var(--radio-lg);
-  padding: var(--espacio-lg);
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  transition: transform var(--transicion-rapida), box-shadow var(--transicion-rapida);
+  color: var(--color-texto-secundario);
+  padding: 10px 20px;
+  border-radius: var(--radio-full);
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+  cursor: pointer;
+  overflow: hidden;
+  position: relative;
 }
 
-.info-card:hover {
+/* Efecto hover vibrante en los botones */
+.btn-sutil:hover {
+  background: var(--color-primario);
+  color: var(--color-blanco);
+  border-color: var(--color-primario);
   transform: translateY(-2px);
-  box-shadow: var(--sombra-md);
+  box-shadow: 0 6px 12px rgba(2, 132, 199, 0.2);
 }
 
-.info-card-icono {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radio-md);
+.btn-sutil:active {
+  transform: translateY(0);
+}
+
+/* ── KPIs Interactivos (Micro-animaciones) ── */
+.dash-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.dash-kpi-card {
+  background: var(--color-blanco);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-xl);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+  cursor: default;
+}
+
+/* Efecto hover tipo Glass/Lift en las tarjetas */
+.dash-kpi-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.08);
+  border-color: transparent;
+}
+
+/* Brillo sutil al hacer hover (Highlight) */
+.dash-kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(135deg, rgba(2, 132, 199, 0.05) 0%, rgba(2, 132, 199, 0) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
+}
+
+.dash-kpi-card:hover::before {
+  opacity: 1;
+}
+
+.kpi-titulo {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-texto-secundario);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  z-index: 1;
+}
+
+.kpi-valor {
+  font-size: 3rem;
+  font-weight: 300;
+  color: var(--color-texto);
+  line-height: 1;
+  z-index: 1;
+  transition: transform 0.3s ease;
+}
+
+.dash-kpi-card:hover .kpi-valor {
+  transform: scale(1.05); /* Efecto de latido/crecimiento del número */
+}
+
+.text-advertencia { color: var(--color-advertencia); }
+.text-exito { color: var(--color-exito); }
+
+/* ── Lista de Actividad Simple ── */
+.dash-actividad-seccion {
+  background: transparent;
+}
+
+.dash-subtitulo {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--color-texto);
+  margin-bottom: 24px;
+  letter-spacing: 0.5px;
+}
+
+.dash-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.lista-item-minimal {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
+  padding: 16px 24px;
+  background: var(--color-blanco);
+  border-radius: var(--radio-lg);
+  border: 1px solid var(--color-borde);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.01);
 }
 
-.info-card-icono.primario {
-  background: var(--color-primario-light);
+.lista-item-minimal:hover {
+  transform: scale(1.01) translateX(4px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+  border-color: var(--color-primario-light);
+  background: #F8FAFC;
+}
+
+.punto-estado {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 20px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.lista-item-minimal:hover .punto-estado {
+  transform: scale(1.4);
+  box-shadow: 0 0 10px currentColor; /* Resplandor del punto */
+}
+
+.lista-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lista-doc {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--color-texto);
+  transition: color 0.3s ease;
+}
+
+.lista-item-minimal:hover .lista-doc {
   color: var(--color-primario);
 }
 
-.info-card-icono.exito {
-  background: var(--color-exito-light);
-  color: var(--color-exito);
-}
-
-.info-card-icono.advertencia {
-  background: var(--color-advertencia-light);
-  color: var(--color-advertencia);
-}
-
-.info-card-icono svg {
-  width: 24px;
-  height: 24px;
-}
-
-.info-card-contenido h3 {
-  font-size: var(--fuente-2xl);
-  font-weight: 700;
-  color: var(--color-texto);
-}
-
-.info-card-contenido p {
-  font-size: var(--fuente-sm);
+.lista-remitente {
+  font-size: 0.85rem;
   color: var(--color-texto-secundario);
 }
 
+.lista-meta {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: flex-end;
+}
+
+.lista-estado {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-texto-secundario);
+}
+
+.lista-fecha {
+  font-size: 0.85rem;
+  color: var(--color-texto-terciario);
+}
+
 /* ── Responsive ── */
-@media (max-width: 640px) {
-  .bienvenida-card {
-    padding: var(--espacio-xl) var(--espacio-lg);
+@media (max-width: 768px) {
+  .dash-header-minimalista {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
   }
-
-  .bienvenida-nombre {
-    font-size: var(--fuente-2xl);
-  }
-
-  .dashboard-info {
-    grid-template-columns: 1fr;
-  }
+  .dash-saludo { font-size: 1.8rem; }
+  .dash-kpi-grid { gap: 16px; }
+  .lista-item-minimal { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .punto-estado { display: none; }
+  .lista-meta { text-align: left; align-items: flex-start; width: 100%; }
 }

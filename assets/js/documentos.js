@@ -10,6 +10,13 @@ const Documentos = {
   _totalRegistros: 0,
 
   async renderizar(contenedor) {
+
+    // Mover título y subtítulo al header global
+    const tituloHeader = document.getElementById('titulo-pagina');
+    if (tituloHeader) {
+      tituloHeader.innerHTML = `GESTIÓN DE DOCUMENTOS <span style="font-size: 0.95rem; font-weight: 500; color: var(--color-texto-secundario); margin-left: 12px; border-left: 1px solid var(--color-borde); padding-left: 12px;">Registro de todos los documentos emitidos y en trámite.</span>`;
+    }
+
     contenedor.innerHTML = `
       <div class="doc-container">
         <!-- Dashboard de Estadísticas -->

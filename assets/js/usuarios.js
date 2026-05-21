@@ -28,13 +28,15 @@ const Usuarios = {
       return;
     }
 
+    // Mover título y subtítulo al header global
+    const tituloHeader = document.getElementById('titulo-pagina');
+    if (tituloHeader) {
+      tituloHeader.innerHTML = `GESTION DE USUARIOS <span style="font-size: 0.95rem; font-weight: 500; color: var(--color-texto-secundario); margin-left: 12px; border-left: 1px solid var(--color-borde); padding-left: 12px;">Administre el personal y sus permisos de acceso al sistema.</span>`;
+    }
+
     contenedor.innerHTML = `
       <div class="usuarios-container">
-        <div class="usuarios-cabecera">
-          <div class="cabecera-info">
-            <h2>Gestión de Usuarios</h2>
-            <p class="cabecera-subtitulo">Administre el personal y sus permisos de acceso al sistema.</p>
-          </div>
+        <div class="usuarios-cabecera" style="justify-content: flex-end; margin-bottom: 24px;">
           <button class="btn-nuevo-usuario md-elevation-1" id="btn-nuevo-usuario">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/>

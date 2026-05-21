@@ -1,105 +1,151 @@
 /* ============================================
-   SISTEMA SIS — Dashboard
+   SISTEMA SIS — Dashboard Minimalista
    ============================================ */
 
 const Dashboard = {
-  /**
-   * Renderizar vista del dashboard
-   */
   async renderizar(contenedor, perfil) {
+    // 1. Mostrar Spinner limpio
+    contenedor.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;padding:100px;">
+        <div class="spinner primario"></div>
+      </div>
+    `;
+
+    // 2. Variables Base
     const ahora = new Date();
     const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
     const fechaFormateada = ahora.toLocaleDateString('es-PE', opciones);
-
-    // Determinar saludo según hora
     const hora = ahora.getHours();
     let saludo = 'Buenos días';
     if (hora >= 12 && hora < 18) saludo = 'Buenas tardes';
     if (hora >= 18) saludo = 'Buenas noches';
 
-    const nombre = perfil ? perfil.nombre_completo : 'Usuario';
+    const nombre = perfil ? perfil.nombre_completo.split(' ')[0] : 'Usuario';
     const rol = perfil ? perfil.rol : 'operador';
 
-    let htmlInfo = '';
+    // 3. Consultar Métricas Reales desde Supabase
+    let stats = { hoy: 0, pendientes: 0, finalizados: 0 };
+    let ultimosDocumentos = [];
 
-    // Si es administrador, mostrar estadísticas
-    if (rol === 'administrador') {
-      let totalUsuarios = 0;
-      let usuariosActivos = 0;
+    try {
+      const hoyStr = ahora.toISOString().split('T')[0];
 
-      try {
-        const { count: total } = await clienteSupabase
-          .from('perfiles')
-          .select('*', { count: 'exact', head: true });
-        totalUsuarios = total || 0;
+      // Documentos de Hoy
+      const { count: countHoy } = await clienteSupabase
+        .from('documentos')
+        .select('*', { count: 'exact', head: true })
+        .gte('fecha_documento', hoyStr);
+      stats.hoy = countHoy || 0;
 
-        const { count: activos } = await clienteSupabase
-          .from('perfiles')
-          .select('*', { count: 'exact', head: true })
-          .eq('activo', true);
-        usuariosActivos = activos || 0;
-      } catch (err) {
-        console.error('Error al obtener estadísticas:', err);
-      }
+      // Trámites Pendientes
+      const { count: countPendientes } = await clienteSupabase
+        .from('documentos')
+        .select('*', { count: 'exact', head: true })
+        .in('estado', ['REGISTRADO', 'EN PROCESO']);
+      stats.pendientes = countPendientes || 0;
 
-      htmlInfo = `
-        <div class="dashboard-info">
-          <div class="info-card">
-            <div class="info-card-icono primario">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-              </svg>
-            </div>
-            <div class="info-card-contenido">
-              <h3>${totalUsuarios}</h3>
-              <p>Usuarios registrados</p>
-            </div>
+      // Trámites Finalizados
+      const { count: countFinalizados } = await clienteSupabase
+        .from('documentos')
+        .select('*', { count: 'exact', head: true })
+        .in('estado', ['ATENDIDO', 'FINALIZADO']);
+      stats.finalizados = countFinalizados || 0;
+
+      // Últimos 5 movimientos (Listado)
+      const { data: ultimos } = await clienteSupabase
+        .from('documentos')
+        .select('id, numero_documento, remitente, estado, fecha_documento')
+        .order('id', { ascending: false })
+        .limit(5);
+      
+      ultimosDocumentos = ultimos || [];
+    } catch (err) {
+      console.error('Error al cargar datos del dashboard:', err);
+    }
+
+    // 4. Renderizar UI Limpia (Minimalista)
+    
+    // Mover saludo al header global
+    const tituloHeader = document.getElementById('titulo-pagina');
+    if (tituloHeader) {
+      tituloHeader.innerHTML = `${saludo}, ${nombre}. <span style="font-size: 0.95rem; font-weight: 500; color: var(--color-texto-secundario); margin-left: 12px; border-left: 1px solid var(--color-borde); padding-left: 12px;">${fechaFormateada.charAt(0).toUpperCase() + fechaFormateada.slice(1)}</span>`;
+    }
+
+    // Header Minimalista solo con Acciones Rápidas
+    const htmlHeader = `
+      <div class="dash-header-minimalista" style="justify-content: flex-end; border-bottom: none; margin-bottom: 24px; padding-bottom: 0;">
+        <div class="dash-acciones-sutiles">
+          <button class="btn-sutil" onclick="App.navegar('registrar-tramite')" title="Nuevo Trámite">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Nuevo
+          </button>
+          <button class="btn-sutil" onclick="App.navegar('documentos')" title="Ver Documentos">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+            Documentos
+          </button>
+        </div>
+      </div>
+    `;
+
+    // KPIs Limpios
+    const htmlKPIs = `
+      <div class="dash-kpi-grid">
+        <div class="dash-kpi-card">
+          <span class="kpi-titulo">Ingresados Hoy</span>
+          <div class="kpi-valor">${stats.hoy}</div>
+        </div>
+        <div class="dash-kpi-card">
+          <span class="kpi-titulo">Trámites Pendientes</span>
+          <div class="kpi-valor text-advertencia">${stats.pendientes}</div>
+        </div>
+        <div class="dash-kpi-card">
+          <span class="kpi-titulo">Trámites Finalizados</span>
+          <div class="kpi-valor text-exito">${stats.finalizados}</div>
+        </div>
+      </div>
+    `;
+
+    // Lista de Actividad Simple
+    let htmlLista = ultimosDocumentos.map(doc => {
+      let colorPunto = 'var(--color-borde-hover)';
+      if (doc.estado === 'EN PROCESO') colorPunto = 'var(--color-info)';
+      if (doc.estado === 'ATENDIDO' || doc.estado === 'FINALIZADO') colorPunto = 'var(--color-exito)';
+      if (doc.estado === 'OBSERVADO') colorPunto = 'var(--color-error)';
+
+      return `
+        <div class="lista-item-minimal">
+          <div class="punto-estado" style="background-color: ${colorPunto};"></div>
+          <div class="lista-info">
+            <div class="lista-doc">${doc.numero_documento || 'S/N'}</div>
+            <div class="lista-remitente">${doc.remitente || 'Sin remitente'}</div>
           </div>
-          <div class="info-card">
-            <div class="info-card-icono exito">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>
-              </svg>
-            </div>
-            <div class="info-card-contenido">
-              <h3>${usuariosActivos}</h3>
-              <p>Usuarios activos</p>
-            </div>
-          </div>
-          <div class="info-card">
-            <div class="info-card-icono advertencia">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
-              </svg>
-            </div>
-            <div class="info-card-contenido">
-              <h3>v1.0</h3>
-              <p>Versión del sistema</p>
-            </div>
+          <div class="lista-meta">
+            <span class="lista-estado">${doc.estado}</span>
+            <span class="lista-fecha">${doc.fecha_documento || '-'}</span>
           </div>
         </div>
       `;
+    }).join('');
+
+    if (ultimosDocumentos.length === 0) {
+      htmlLista = '<div style="padding:40px 0; color:var(--color-texto-secundario); font-size:0.9rem;">No hay actividad reciente para mostrar.</div>';
     }
 
-    contenedor.innerHTML = `
-      <div class="dashboard-container">
-        <div class="bienvenida-card">
-          <p class="bienvenida-saludo">${saludo},</p>
-          <h1 class="bienvenida-nombre">${nombre}</h1>
-          <span class="bienvenida-rol">
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            </svg>
-            ${rol}
-          </span>
-          <div class="bienvenida-fecha">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-            ${fechaFormateada}
-          </div>
+    const htmlActividad = `
+      <div class="dash-actividad-seccion">
+        <h3 class="dash-subtitulo">Actividad Reciente</h3>
+        <div class="dash-lista">
+          ${htmlLista}
         </div>
-        ${htmlInfo}
+      </div>
+    `;
+
+    // Ensamblar todo
+    contenedor.innerHTML = `
+      <div class="dashboard-minimalista fade-in">
+        ${htmlHeader}
+        ${htmlKPIs}
+        ${htmlActividad}
       </div>
     `;
   }

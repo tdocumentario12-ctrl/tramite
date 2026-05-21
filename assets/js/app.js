@@ -194,7 +194,8 @@ const App = {
       'registrar-tramite': 'Registrar Trámite',
       'documentos': 'Gestión de Documentos',
       'areas': 'Gestión de Áreas',
-      'reportes': 'Reportes y Estadísticas'
+      'reportes': 'Reportes y Estadísticas',
+      'inventario': 'Control de Inventario'
     };
     document.getElementById('titulo-pagina').textContent = titulos[seccion] || 'Dashboard';
 
@@ -228,6 +229,9 @@ const App = {
           break;
         case 'reportes':
           await Reportes.renderizar(contenedor, this._perfil);
+          break;
+        case 'inventario':
+          await Inventario.renderizar(contenedor, this._perfil);
           break;
         default:
           await Dashboard.renderizar(contenedor, this._perfil);

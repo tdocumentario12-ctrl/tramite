@@ -18,13 +18,18 @@ const Areas = {
     this._editandoId = null;
     this._eliminandoId = null;
 
+        // Mover título y subtítulo al header global
+    const tituloHeader = document.getElementById('titulo-pagina');
+    if (tituloHeader) {
+      tituloHeader.innerHTML = `GESTIÓN DE ÁREAS HOSPITALARIAS <span style="font-size: 0.95rem; font-weight: 500; color: var(--color-texto-secundario); margin-left: 12px; border-left: 1px solid var(--color-borde); padding-left: 12px;">Configura los cargos oficiales del Hospital San José de Chincha.</span>`;
+    }
+
     contenedor.innerHTML = `
       <div class="areas-container">
         <!-- Cabecera de Sección -->
         <div class="areas-cabecera">
           <div class="cabecera-info-areas">
-            <h2 style="font-size: 1.75rem; font-weight: 800; color: #0F172A; margin: 0;">Gestión de Áreas Hospitalarias</h2>
-            <div class="areas-subtitulo">Configure de manera dinámica los departamentos, jefes de área y cargos oficiales del Hospital San José de Chincha.</div>
+            
           </div>
           <button class="btn-nueva-area" id="btn-abrir-nueva-area">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

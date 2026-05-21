@@ -51,7 +51,14 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  min-width: 0; /* Permite encoger contenido interno */
+  min-width: 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.01);
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.05);
 }
 
 .stat-icon {
@@ -96,12 +103,23 @@
   text-overflow: ellipsis;
 }
 
-/* Colores */
-.stat-total .stat-icon { background: #E0F2FE; color: #0284C7; }
+/* Colores de ícono y borde izquierdo */
+.stat-total   { border-left: 5px solid #0284C7; }
+.stat-total   .stat-icon { background: #E0F2FE; color: #0284C7; }
+
+.stat-emitidos { border-left: 5px solid #2563EB; }
 .stat-emitidos .stat-icon { background: #DBEAFE; color: #2563EB; }
+
+.stat-derivados { border-left: 5px solid #EA580C; }
 .stat-derivados .stat-icon { background: #FFEDD5; color: #EA580C; }
+
+.stat-pendientes { border-left: 5px solid #D97706; }
 .stat-pendientes .stat-icon { background: #FEF3C7; color: #D97706; }
+
+.stat-atendidos { border-left: 5px solid #16A34A; }
 .stat-atendidos .stat-icon { background: #DCFCE7; color: #16A34A; }
+
+.stat-observados { border-left: 5px solid #DC2626; }
 .stat-observados .stat-icon { background: #FEE2E2; color: #DC2626; }
 
 /* ── Panel de Filtros ── */
