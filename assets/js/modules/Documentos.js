@@ -5,6 +5,7 @@ const Documentos = {
   _porPagina: 10,
   _totalRegistros: 0,
   _perfil: null,
+  _eliminandoId: null,
 
   async renderizar(contenedor, perfil) {
     this._perfil = perfil;
@@ -150,7 +151,7 @@ const Documentos = {
   </div>
 </div>
 
-<!-- === MODAL DETALLE === -->
+<!-- === MODAL DETALLE PREMIUM === -->
 <div class="modal-overlay" id="modal-doc-detalle">
   <div class="modal-card">
     <div class="modal-header">
@@ -205,6 +206,27 @@ const Documentos = {
       <button class="modal-btn modal-btn-cerrar" id="doc-modal-cerrar-footer">Cerrar</button>
     </div>
   </div>
+</div>
+
+<!-- === MODAL ELIMINAR === -->
+<div class="modal-overlay" id="modal-eliminar-documento">
+  <div class="modal-card" style="max-width: 440px;">
+    <div class="modal-eliminar-contenido">
+      <div class="modal-eliminar-icono">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+          <line x1="12" y1="9" x2="12" y2="13"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+      </div>
+      <h3 class="modal-eliminar-titulo">Eliminar registro</h3>
+      <p class="modal-eliminar-texto">\u00bfEst\u00e1s seguro de que deseas eliminar este registro? Esta acci\u00f3n no se puede deshacer.</p>
+      <div class="modal-eliminar-acciones">
+        <button class="modal-eliminar-btn modal-eliminar-btn-cancelar" id="btn-cancelar-eliminar-doc">Cancelar</button>
+        <button class="modal-eliminar-btn modal-eliminar-btn-eliminar" id="btn-confirmar-eliminar-doc">Eliminar</button>
+      </div>
+    </div>
+  </div>
 </div>`;
     contenedor.innerHTML = html;
 
@@ -233,6 +255,24 @@ const Documentos = {
     };
     document.getElementById('doc-modal-cerrar')?.addEventListener('click', cerrarModal);
     document.getElementById('doc-modal-cerrar-footer')?.addEventListener('click', cerrarModal);
+
+    document.getElementById('btn-cancelar-eliminar-doc')?.addEventListener('click', () => this.cerrarModalEliminar());
+    document.getElementById('btn-confirmar-eliminar-doc')?.addEventListener('click', () => this.confirmarEliminar());
+
+    document.getElementById('modal-eliminar-documento')?.addEventListener('click', (e) => {
+      if (e.target === e.currentTarget) this.cerrarModalEliminar();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (document.getElementById('modal-doc-detalle')?.classList.contains('visible')) {
+          document.getElementById('modal-doc-detalle').classList.remove('visible');
+        }
+        if (document.getElementById('modal-eliminar-documento')?.classList.contains('visible')) {
+          this.cerrarModalEliminar();
+        }
+      }
+    });
   },
 
   _inicializarCalendarios() {
@@ -416,43 +456,85 @@ const Documentos = {
     const detBody = document.getElementById('det-body');
 
     detBody.innerHTML = `
-      <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 20px;">
-        <div style="display: flex; flex-direction: column; gap: 15px;">
-          <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-            <h4 style="color: #1976D2; font-size: 0.65rem; text-transform: uppercase; margin-bottom: 12px; font-weight: 800; border-bottom: 1px solid #F1F5F9; padding-bottom: 5px;">INFORMACIÓN</h4>
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-              <div><span style="font-size: 0.6rem; color: #94A3B8; display:block;">NÚMERO</span><b style="font-size: 1rem;">${doc.numero_documento}</b></div>
-              <div style="display:flex; gap:10px;">
-                <div style="flex:1;"><span style="font-size: 0.6rem; color: #94A3B8; display:block;">TIPO</span><span style="font-size: 0.75rem;">${doc.tipo_documento}</span></div>
-                <div style="flex:1;"><span style="font-size: 0.6rem; color: #94A3B8; display:block;">FECHA DOC.</span><span style="font-size: 0.75rem;">${doc.fecha_documento}</span></div>
+      <div class="detalle-grid">
+        <div class="detalle-col">
+          <div class="detalle-card">
+            <h4 class="detalle-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              INFORMACI\u00d3N DEL DOCUMENTO
+            </h4>
+            <div class="detalle-field">
+              <span class="detalle-label">N\u00daMERO</span>
+              <span class="detalle-value-numero">${doc.numero_documento}</span>
+            </div>
+            <div class="detalle-row">
+              <div class="detalle-field">
+                <span class="detalle-label">TIPO</span>
+                <span class="detalle-value">${doc.tipo_documento}</span>
+              </div>
+              <div class="detalle-field">
+                <span class="detalle-label">FECHA DOC.</span>
+                <span class="detalle-value">${doc.fecha_documento}</span>
               </div>
             </div>
           </div>
 
-          <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-            <h4 style="color: #1976D2; font-size: 0.65rem; text-transform: uppercase; margin-bottom: 12px; font-weight: 800; border-bottom: 1px solid #F1F5F9; padding-bottom: 5px;">PARTICIPANTES</h4>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-              <div><span style="font-size: 0.6rem; color: #94A3B8; display:block;">REMITENTE</span><span style="font-size: 0.8rem; font-weight: 600;">${doc.remitente}</span></div>
-              <div><span style="font-size: 0.6rem; color: #94A3B8; display:block;">DESTINATARIO</span><span style="font-size: 0.8rem; font-weight: 600;">${doc.destinatario}</span></div>
-              <div><span style="font-size: 0.6rem; color: #94A3B8; display:block;">CARGO</span><span style="font-size: 0.75rem; font-style: italic; color: #64748B;">${doc.cargo_destinatario || '---'}</span></div>
-              <div style="padding-top:8px; border-top: 1px dashed #F1F5F9;"><span style="font-size: 0.6rem; color: #94A3B8; display:block;">ÁREA DESTINO</span><b style="color: #1976D2; font-size: 0.85rem;">${doc.area_destino || 'MESA DE PARTES'}</b></div>
+          <div class="detalle-card">
+            <h4 class="detalle-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              PARTICIPANTES
+            </h4>
+            <div class="detalle-field">
+              <span class="detalle-label">REMITENTE</span>
+              <span class="detalle-value">${doc.remitente}</span>
+            </div>
+            <div class="detalle-field">
+              <span class="detalle-label">DESTINATARIO</span>
+              <span class="detalle-value detalle-value-destinatario">${doc.destinatario}</span>
+            </div>
+            <div class="detalle-field">
+              <span class="detalle-label">CARGO</span>
+              <span class="detalle-value detalle-value-cargo">${doc.cargo_destinatario || '---'}</span>
+            </div>
+            <div class="detalle-field">
+              <span class="detalle-label">\u00c1REA DESTINO</span>
+              <span class="detalle-value detalle-value-area">${doc.area_destino || 'MESA DE PARTES'}</span>
             </div>
           </div>
         </div>
 
-        <div style="display: flex; flex-direction: column; gap: 15px;">
-          <div style="background: white; padding: 15px; border-radius: 12px; border: 1px solid #E2E8F0; flex-grow: 1;">
-            <h4 style="color: #1976D2; font-size: 0.65rem; text-transform: uppercase; margin-bottom: 12px; font-weight: 800; border-bottom: 1px solid #F1F5F9; padding-bottom: 5px;">CONTENIDO</h4>
-            <div style="margin-bottom:12px;"><span style="font-size: 0.6rem; color: #94A3B8; display:block;">ASUNTO</span><b style="font-size: 0.9rem; line-height: 1.3;">${doc.asunto}</b></div>
-            <div><span style="font-size: 0.6rem; color: #94A3B8; display:block;">DESCRIPCIÓN</span><p style="font-size: 0.8rem; color: #475569; line-height: 1.5; margin-top:5px;">${doc.descripcion || 'Sin descripción.'}</p></div>
+        <div class="detalle-col">
+          <div class="detalle-card detalle-card-grow">
+            <h4 class="detalle-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              CONTENIDO
+            </h4>
+            <div class="detalle-field">
+              <span class="detalle-label">ASUNTO</span>
+              <span class="detalle-value detalle-value-asunto">${doc.asunto}</span>
+            </div>
+            <div class="detalle-field">
+              <span class="detalle-label">DESCRIPCI\u00d3N</span>
+              <p class="detalle-descripcion">${doc.descripcion || 'Sin descripci\u00f3n.'}</p>
+            </div>
           </div>
 
-          <div style="background: #F1F5F9; padding: 12px 15px; border-radius: 10px; display:flex; flex-direction: column; gap: 8px; border: 1px solid #E2E8F0;">
-            <div style="display:flex; justify-content: space-between; align-items: center;">
-              <div><small style="color: #64748B; font-size: 0.55rem; font-weight:700; text-transform: uppercase;">AUTOR / FIRMANTE</small><div style="font-weight: 700; font-size: 0.8rem; color: #1976D2;">${doc.firmante?.nombre_completo || doc.usuario_registro?.nombre_completo || 'Usuario'}</div></div>
-              <div style="text-align:right;"><small style="color: #64748B; font-size: 0.55rem; font-weight:700; text-transform: uppercase;">FECHA</small><div style="font-weight: 700; font-size: 0.8rem;">${new Date(doc.creado_en).toLocaleDateString()}</div></div>
+          <div class="detalle-firma-card">
+            <div class="detalle-firma-info">
+              <div>
+                <span class="detalle-label">AUTOR / FIRMANTE</span>
+                <span class="detalle-value detalle-value-firmante">${doc.firmante?.nombre_completo || doc.usuario_registro?.nombre_completo || 'Usuario'}</span>
+              </div>
+              <div class="detalle-firma-fecha">
+                <span class="detalle-label">FECHA</span>
+                <span class="detalle-value">${new Date(doc.creado_en).toLocaleDateString()}</span>
+              </div>
             </div>
-            <div style="border-top: 1px dashed #CBD5E1; padding-top: 6px;"><small style="color: #64748B; font-size: 0.52rem; font-weight:700; text-transform: uppercase;">ELABORADO POR</small><span style="font-size: 0.72rem; color: #475569; margin-left: 8px;">${doc.usuario_registro?.nombre_completo || 'Usuario'}</span></div>
+            <div class="detalle-firma-separator"></div>
+            <div class="detalle-elaborado">
+              <span class="detalle-label">ELABORADO POR</span>
+              <span class="detalle-value">${doc.usuario_registro?.nombre_completo || 'Usuario'}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -694,10 +776,27 @@ const Documentos = {
 
   derivarNuevamente(id) { sessionStorage.setItem('derivar_id', id); App.navegar('registrar-tramite'); },
 
-  async eliminar(id) {
-    if (confirm('¿Eliminar registro?')) {
-      const { error } = await clienteSupabase.from('documentos').delete().eq('id', id);
-      if (error) Toast.error('Error'); else { Toast.exito('Eliminado'); this.cargarDocumentos(1); }
+  cerrarModalEliminar() {
+    this._eliminandoId = null;
+    document.getElementById('modal-eliminar-documento')?.classList.remove('visible');
+  },
+
+  eliminar(id) {
+    this._eliminandoId = id;
+    document.getElementById('modal-eliminar-documento')?.classList.add('visible');
+  },
+
+  async confirmarEliminar() {
+    if (!this._eliminandoId) return;
+    const id = this._eliminandoId;
+    this.cerrarModalEliminar();
+    const { error } = await clienteSupabase.from('documentos').delete().eq('id', id);
+    if (error) {
+      Toast.error('Error al eliminar');
+    } else {
+      Toast.exito('Registro eliminado');
+      this.cargarDocumentos(1);
+      this.cargarEstadisticas();
     }
   }
 };
