@@ -18,26 +18,26 @@
   border-radius: 10px;
   font-weight: 700;
   font-size: 0.9rem;
-  background: #E2E8F0;
+  background: var(--color-borde);
   color: var(--color-texto-secundario);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid transparent;
 }
 
 .tab-btn:hover {
-  background: #CBD5E1;
+  background: var(--color-borde-hover);
   color: var(--color-texto);
 }
 
 .tab-btn.activo {
   background: var(--color-primario);
-  color: white;
+  color: var(--color-blanco);
   box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
 }
 
 /* ── Tarjeta Principal ── */
 .tramite-card {
-  background: white;
+  background: var(--color-fondo-card);
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
   padding: 40px;
@@ -65,7 +65,7 @@
   width: 28px;
   height: 28px;
   background: var(--color-primario);
-  color: white;
+  color: var(--color-blanco);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -114,7 +114,7 @@
   padding: 0 14px;
   border-radius: 10px;
   border: 1.5px solid var(--color-borde);
-  background: #FDFDFD;
+  background: var(--color-fondo);
   color: var(--color-texto);
   font-size: var(--fuente-base);
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -122,7 +122,7 @@
 
 .campo-input:focus {
   border-color: var(--color-primario);
-  background: white;
+  background: var(--color-blanco);
   box-shadow: 0 0 0 4px var(--color-primario-ultra-light);
   outline: none;
 }
@@ -153,7 +153,7 @@ select.campo-input {
   right: 12px;
   font-size: 0.75rem;
   color: var(--color-texto-terciario);
-  background: rgba(255, 255, 255, 0.8);
+  background: var(--color-blanco);
   padding: 2px 6px;
   border-radius: 4px;
   pointer-events: none;
@@ -161,11 +161,11 @@ select.campo-input {
 
 /* ── Drag & Drop Area ── */
 .upload-zone {
-  border: 2px dashed #E2E8F0;
+  border: 2px dashed var(--color-borde);
   border-radius: 16px;
   padding: 40px;
   text-align: center;
-  background: #F8FAFC;
+  background: var(--color-fondo);
   transition: all 0.3s ease;
   cursor: pointer;
   display: flex;
@@ -182,7 +182,7 @@ select.campo-input {
 .upload-icon {
   width: 64px;
   height: 64px;
-  background: #E0F2FE;
+  background: var(--color-primario-light);
   color: var(--color-primario);
   border-radius: 50%;
   display: flex;
@@ -203,7 +203,7 @@ select.campo-input {
 }
 
 .btn-select-file {
-  background: #E2E8F0;
+  background: var(--color-borde);
   color: var(--color-texto);
   padding: 8px 20px;
   border-radius: 100px;
@@ -228,7 +228,7 @@ select.campo-input {
 }
 
 .btn-cancelar {
-  background: #F1F5F9;
+  background: var(--color-fondo-alt);
   color: var(--color-texto-secundario);
   padding: 8px 22px;
   border-radius: 10px;
@@ -238,13 +238,13 @@ select.campo-input {
 }
 
 .btn-cancelar:hover {
-  background: #E2E8F0;
+  background: var(--color-borde);
   color: var(--color-texto);
 }
 
 .btn-guardar-tramite {
   background: var(--color-primario);
-  color: white;
+  color: var(--color-blanco);
   padding: 8px 22px;
   border-radius: 10px;
   font-weight: 700;

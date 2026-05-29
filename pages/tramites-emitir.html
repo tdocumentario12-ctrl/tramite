@@ -1,0 +1,102 @@
+<div class="tramite-card">
+  <form id="form-registro-tramite" autocomplete="off">
+    <section class="form-seccion">
+      <div class="seccion-titulo"><span class="seccion-numero">1</span><h3>Datos Generales</h3></div>
+      <div class="grid-4">
+        <div class="campo-grupo">
+          <label class="campo-label">Número de documento</label>
+          <input type="text" id="t-numero" class="campo-input" placeholder="Ej. 454-2026-US-HSJCH" required>
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-label">Tipo de documento</label>
+          <select id="t-tipo" class="campo-input" required>
+            <option value="NOTA Nº" selected>Nota Nº</option>
+            <option value="OFICIO Nº">Oficio Nº</option>
+            <option value="CARTA Nº">Carta Nº</option>
+            <option value="MEMORANDUM Nº">Memorándum Nº</option>
+            <option value="SOLICITUD Nº">Solicitud Nº</option>
+            <option value="INFORME Nº">Informe Nº</option>
+          </select>
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-label">Fecha</label>
+          <input type="date" id="t-fecha" class="campo-input" required>
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-label">Prioridad</label>
+          <select id="t-prioridad" class="campo-input" required>
+            <option value="BAJA">Baja</option>
+            <option value="MEDIA" selected>Media</option>
+            <option value="ALTA">Alta</option>
+            <option value="URGENTE">Urgente</option>
+          </select>
+        </div>
+        <div class="campo-grupo" style="grid-column: span 2;">
+          <label class="campo-label">Autor / Firmante del Documento</label>
+          <select id="t-firmante" class="campo-input" required>
+            <option value="" disabled selected>Cargando firmantes...</option>
+          </select>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-seccion">
+      <div class="seccion-titulo"><span class="seccion-numero">2</span><h3>Origen y Destino</h3></div>
+      <div class="grid-4">
+        <div class="campo-grupo">
+          <label class="campo-label">Remitente</label>
+          <input type="text" id="t-remitente" class="campo-input" placeholder="Nombre o institución" required>
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-label">Área</label>
+          <select id="t-area" class="campo-input" required>
+            <option value="" disabled selected>Seleccione el área</option>
+            {{AREAS_OPTIONS}}
+          </select>
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-label">Destinatario (Señor/a)</label>
+          <input type="text" id="t-destinatario" class="campo-input" placeholder="Nombre completo" required>
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-label">Cargo del Destinatario</label>
+          <input type="text" id="t-cargo" class="campo-input" placeholder="Ej. Jefe de Unidad" required>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-seccion">
+      <div class="seccion-titulo"><span class="seccion-numero">3</span><h3>Detalle del Documento</h3></div>
+      <div class="campo-grupo full">
+        <label class="campo-label">Asunto</label>
+        <input type="text" id="t-asunto" class="campo-input" placeholder="Ingrese el asunto" required>
+      </div>
+      <div class="campo-grupo full" style="margin-top:20px;">
+        <label class="campo-label">Cuerpo del Documento</label>
+        <div class="textarea-wrapper">
+          <textarea id="t-descripcion" class="campo-input campo-textarea" placeholder="Redacte el contenido..." maxlength="2000"></textarea>
+          <span class="char-counter" id="t-char-counter">0/2000</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="form-seccion">
+      <div class="seccion-titulo"><span class="seccion-numero">4</span><h3>Archivo Adjunto (opcional)</h3></div>
+      <div class="upload-zone" id="t-upload-zone">
+        <input type="file" id="t-file-input" hidden accept="application/pdf">
+        <div class="upload-icon">📄</div>
+        <h4>Arrastre o seleccione el documento (PDF)</h4>
+        <button type="button" class="btn-select-file" id="t-btn-select">Seleccionar archivo</button>
+        <small id="t-file-name">Solo archivos PDF</small>
+      </div>
+    </section>
+
+    <div class="form-acciones">
+      <button type="button" class="btn-cancelar" id="t-btn-cancelar">Cancelar</button>
+      <button type="submit" class="btn-guardar-tramite" id="t-btn-guardar">
+        <span id="t-btn-texto">Emitir Documento</span>
+        <div class="spinner" id="t-btn-spinner" style="display:none; width:18px; height:18px;"></div>
+      </button>
+    </div>
+  </form>
+</div>

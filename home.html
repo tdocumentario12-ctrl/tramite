@@ -13,120 +13,117 @@
   <link rel="stylesheet" href="assets/css/dashboard.css">
   <link rel="stylesheet" href="assets/css/usuarios.css">
   <link rel="stylesheet" href="assets/css/tramites.css">
-  <link rel="stylesheet" href="assets/css/documentos.css">
+  <link rel="stylesheet" href="assets/css/documentos.css?v=5.0">
   <link rel="stylesheet" href="assets/css/areas.css">
   <link rel="stylesheet" href="assets/css/reportes.css">
   <link rel="stylesheet" href="assets/css/inventario.css">
+  <!-- Flatpickr (Calendario moderno) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 
   <!-- Supabase JS CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
-  <div class="app-layout">
-    <!-- Overlay para sidebar en móvil -->
-    <div class="sidebar-overlay" id="sidebar-overlay"></div>
-
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <!-- Cabecera -->
-      <div class="sidebar-cabecera">
-        <img src="assets/img/Logo.jpg" alt="Logo Hospital" class="sidebar-logo">
-        <div class="sidebar-info">
-          <div class="sidebar-titulo">SISTEMA SIS</div>
-          <div class="sidebar-subtitulo">Trámite Documentario</div>
-        </div>
+  <!-- Header full-width -->
+  <header class="app-header" id="app-header">
+    <div class="header-izq">
+      <button class="btn-menu-movil" id="btn-menu-movil" aria-label="Abrir menú">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+      <img src="assets/img/Logo.jpg" alt="Logo Hospital" class="header-logo">
+      <div class="header-info">
+        <span class="header-titulo">SISTEMA SIS</span>
+        <span class="header-subtitulo">Trámite Documentario</span>
       </div>
+    </div>
+    <h1 class="header-titulo-pagina" id="titulo-pagina">Dashboard</h1>
+    <div class="header-der">
+      <div class="contenido-usuario-info" id="usuario-info">
+        <span id="usuario-nombre"></span>
+        <div class="contenido-usuario-avatar" id="usuario-avatar"></div>
+      </div>
+      <button class="btn-cerrar-sesion-header" id="btn-cerrar-sesion" aria-label="Cerrar sesión">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+        </svg>
+      </button>
+    </div>
+  </header>
 
-      <!-- Divisor -->
-      <div class="sidebar-divisor"></div>
-
-      <!-- Navegación -->
-      <nav class="sidebar-nav">
-        <ul class="sidebar-menu">
-          <li class="sidebar-item activo" data-seccion="dashboard">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
-            </svg>
-            Dashboard
-          </li>
-          <li class="sidebar-item" data-seccion="usuarios" data-rol="administrador">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-            </svg>
-            Usuarios
-          </li>
-          <li class="sidebar-item" data-seccion="registrar-tramite">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
-            </svg>
-            Registrar Trámite
-          </li>
-          <li class="sidebar-item" data-seccion="documentos">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
-            </svg>
-            Documentos
-          </li>
-          <li class="sidebar-item" data-seccion="areas" data-rol="administrador">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/>
-            </svg>
-            Áreas
-          </li>
-          <li class="sidebar-item" data-seccion="reportes">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
-            </svg>
-            Reportes
-          </li>
-          <li class="sidebar-item" data-seccion="inventario" data-rol="administrador">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
-            </svg>
-            Inventario
-          </li>
-        </ul>
-      </nav>
-
-      <!-- Pie -->
-      <div class="sidebar-pie">
-        <button class="sidebar-cerrar-sesion" id="btn-cerrar-sesion">
+  <!-- Layout: sidebar + contenido -->
+  <div class="app-layout">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-item activo" data-seccion="dashboard">
+        <span class="icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
           </svg>
-          Cerrar Sesión
-        </button>
+        </span>
+        <span class="title">Dashboard</span>
+      </div>
+      <div class="sidebar-item" data-seccion="usuarios" data-rol="administrador">
+        <span class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        </span>
+        <span class="title">Usuarios</span>
+      </div>
+      <div class="sidebar-item" data-seccion="registrar-tramite">
+        <span class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/>
+          </svg>
+        </span>
+        <span class="title">Registrar Trámite</span>
+      </div>
+      <div class="sidebar-item" data-seccion="documentos">
+        <span class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </span>
+        <span class="title">Documentos</span>
+      </div>
+      <div class="sidebar-item" data-seccion="areas" data-rol="administrador">
+        <span class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/>
+          </svg>
+        </span>
+        <span class="title">Áreas</span>
+      </div>
+      <div class="sidebar-item" data-seccion="reportes">
+        <span class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+        </span>
+        <span class="title">Reportes</span>
+      </div>
+      <div class="sidebar-item" data-seccion="inventario" data-rol="administrador">
+        <span class="icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+        </span>
+        <span class="title">Inventario</span>
       </div>
     </aside>
 
     <!-- Contenido principal -->
-    <main class="contenido-principal">
-      <!-- Header -->
-      <header class="contenido-header">
-        <div class="contenido-header-izq">
-          <button class="btn-menu-movil" id="btn-menu-movil" aria-label="Abrir menú">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/>
-            </svg>
-          </button>
-          <h1 class="contenido-titulo-pagina" id="titulo-pagina">Dashboard</h1>
-        </div>
-        <div class="contenido-usuario-info" id="usuario-info">
-          <span id="usuario-nombre"></span>
-          <div class="contenido-usuario-avatar" id="usuario-avatar"></div>
-        </div>
-      </header>
-
-      <!-- Área de contenido dinámico -->
+    <main class="contenido-principal" id="contenido-principal">
       <div class="contenido-area" id="contenido-area">
-        <div style="display:flex;align-items:center;justify-content:center;padding:60px;">
-          <div class="spinner primario"></div>
-        </div>
+      <div style="display:flex;align-items:center;justify-content:center;padding:60px;">
+        <div class="spinner primario"></div>
       </div>
+    </div>
     </main>
   </div>
 
-  <!-- Modal de Cerrar Sesión (Estilo Premium y Glassmorphism) -->
+  <!-- Modal de Cerrar Sesión -->
   <div class="modal-overlay" id="modal-confirm-logout">
     <div class="modal-card" style="max-width: 400px; width: 90%; border-radius: 16px; background: white; overflow: hidden; box-shadow: var(--sombra-xl); text-align: center; padding: 30px 20px; animation: modalFadeIn 0.3s ease;">
       <h3 style="margin: 0 0 10px 0; font-size: 1.15rem; color: #0F172A; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px;">ESTAS APUNTO DE CERRAR SESIÓN</h3>
@@ -141,16 +138,18 @@
   <!-- Scripts -->
   <script src="assets/js/config.js"></script>
   <script src="assets/js/auth.js"></script>
-  <!-- Librerías Externas -->
+  <script src="assets/js/template-loader.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
 
-  <script src="assets/js/dashboard.js"></script>
-  <script src="assets/js/usuarios.js"></script>
-  <script src="assets/js/tramites.js"></script>
-  <script src="assets/js/documentos.js"></script>
+  <script src="assets/js/modules/Dashboard.js"></script>
+  <script src="assets/js/modules/Usuarios.js"></script>
+  <script src="assets/js/modules/Tramites.js"></script>
+  <script src="assets/js/modules/Documentos.js?v=5.0"></script>
   <script src="assets/js/areas.js"></script>
-  <script src="assets/js/reportes.js"></script>
-  <script src="assets/js/inventario.js"></script>
+  <script src="assets/js/modules/Reportes.js"></script>
+  <script src="assets/js/modules/Inventario.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>

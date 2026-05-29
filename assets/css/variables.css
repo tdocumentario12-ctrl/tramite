@@ -100,6 +100,8 @@ table th, table td {
   --color-texto-terciario: #94A3B8;
   --color-borde: #E2E8F0;
   --color-borde-hover: #CBD5E1;
+  --color-fondo-alt: #F1F5F9;
+  --color-texto-oscuro: #0F172A;
 
   /* Sidebar Flotante */
   --sidebar-ancho: 78px;

@@ -31,8 +31,8 @@
 }
 
 .btn-exportar-rep {
-  background: #16A34A; /* Verde esmeralda premium */
-  color: white;
+  background: var(--color-exito);
+  color: var(--color-blanco);
   border-radius: var(--radio-lg);
   padding: 10px 24px;
   display: inline-flex;
@@ -47,14 +47,14 @@
 }
 
 .btn-exportar-rep:hover {
-  background: #15803D;
+  background: var(--color-exito);
   transform: translateY(-2px);
   box-shadow: 0 10px 15px -3px rgba(22, 163, 74, 0.25);
 }
 
 /* ── Filtros Analíticos ── */
 .rep-filtros {
-  background: white;
+  background: var(--color-fondo-card);
   border-radius: 20px;
   padding: 24px;
   margin-bottom: 28px;
@@ -84,7 +84,7 @@
 }
 
 .rep-card {
-  background: white;
+  background: var(--color-fondo-card);
   border-radius: 24px;
   padding: 24px;
   border: 1px solid var(--color-borde);
@@ -118,28 +118,28 @@
 .rep-card-valor {
   font-size: 1.8rem;
   font-weight: 800;
-  color: #0F172A;
+  color: var(--color-texto-oscuro);
   line-height: 1.1;
 }
 
 .rep-card-label {
   font-size: 0.8rem;
   font-weight: 600;
-  color: #64748B;
+  color: var(--color-texto-secundario);
   margin-top: 4px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 /* Variantes de Tarjetas */
-.rep-total { border-left: 5px solid #0284C7; }
-.rep-total .rep-card-icon { background: #E0F2FE; color: #0284C7; }
+.rep-total { border-left: 5px solid var(--color-primario); }
+.rep-total .rep-card-icon { background: var(--color-primario-light); color: var(--color-primario); }
 
 .rep-proceso { border-left: 5px solid #D97706; }
-.rep-proceso .rep-card-icon { background: #FEF3C7; color: #D97706; }
+.rep-proceso .rep-card-icon { background: var(--color-advertencia-light); color: #D97706; }
 
-.rep-atendido { border-left: 5px solid #16A34A; }
-.rep-atendido .rep-card-icon { background: #DCFCE7; color: #16A34A; }
+.rep-atendido { border-left: 5px solid var(--color-exito); }
+.rep-atendido .rep-card-icon { background: var(--color-exito-light); color: var(--color-exito); }
 
 .rep-eficiencia { border-left: 5px solid #8B5CF6; }
 .rep-eficiencia .rep-card-icon { background: #F5F3FF; color: #8B5CF6; }
@@ -152,7 +152,7 @@
 }
 
 .grafico-card {
-  background: white;
+  background: var(--color-fondo-card);
   border-radius: 24px;
   padding: 28px;
   border: 1px solid var(--color-borde);
@@ -162,12 +162,12 @@
 .grafico-titulo {
   font-size: 1.1rem;
   font-weight: 800;
-  color: #0F172A;
+  color: var(--color-texto-oscuro);
   margin: 0 0 20px 0;
   display: flex;
   align-items: center;
   gap: 10px;
-  border-bottom: 1px solid #F1F5F9;
+  border-bottom: 1px solid var(--color-fondo-alt);
   padding-bottom: 12px;
 }
 
@@ -188,7 +188,7 @@
 .grafico-barra-bg {
   width: 100%;
   height: 10px;
-  background: #F1F5F9;
+  background: var(--color-fondo-alt);
   border-radius: 9999px;
   overflow: hidden;
 }
@@ -202,7 +202,7 @@
 /* Colores de Barras */
 .fill-celeste { background: linear-gradient(90deg, #0ea5e9, #38bdf8); }
 .fill-verde { background: linear-gradient(90deg, #10b981, #34d399); }
-.fill-naranja { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.fill-naranja { background: linear-gradient(90deg, var(--color-advertencia), #fbbf24); }
 .fill-rojo { background: linear-gradient(90deg, #ef4444, #f87171); }
 .fill-purpura { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
 

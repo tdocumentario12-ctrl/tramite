@@ -4,7 +4,7 @@
 
 const App = {
   _perfil: null,
-  _seccionActual: 'dashboard',
+  _seccionActual: 'documentos',
 
   /**
    * Inicializar la aplicación
@@ -30,7 +30,10 @@ const App = {
     this._renderizarUsuarioInfo();
     this._filtrarMenuPorRol();
     this._vincularEventos();
-    this._cargarSeccion('dashboard');
+    this._vincularHashRouting();
+
+    const seccionInicial = window.location.hash.replace('#', '') || 'dashboard';
+    this._cargarSeccion(seccionInicial);
 
     // Escuchar cambios de autenticación
     Auth.enCambioAuth((evento, session) => {
@@ -61,8 +64,7 @@ const App = {
   },
 
   /**
-   * Ocultar módulos del sidebar según el rol del usuario.
-   * Items con data-rol solo se muestran si el usuario tiene ese rol.
+   * Ocultar módulos según el rol del usuario
    */
   _filtrarMenuPorRol() {
     if (!this._perfil) return;
@@ -76,54 +78,30 @@ const App = {
   },
 
   /**
-   * Vincular eventos de navegación
+   * Vincular eventos
    */
   _vincularEventos() {
-    const sidebar = document.getElementById('sidebar');
-
-    // Menú de navegación
+    // Navegación por sidebar
     document.querySelectorAll('.sidebar-item[data-seccion]').forEach(item => {
       item.addEventListener('click', () => {
         const seccion = item.getAttribute('data-seccion');
-        this._cargarSeccion(seccion);
-        
-        // Contraer sidebar al seleccionar una opción
-        if (sidebar) {
-          sidebar.classList.remove('expandido');
-        }
+        window.location.hash = seccion;
       });
     });
 
-    // Vincular eventos de interacción dinámica con el sidebar
-    if (sidebar) {
-      // Expandir al pasar el mouse (Escritorio)
+    // Expandir/contraer layout cuando el sidebar cambia de tamaño
+    const sidebar = document.getElementById('sidebar');
+    const layout = document.querySelector('.app-layout');
+
+    if (sidebar && layout) {
       sidebar.addEventListener('mouseenter', () => {
-        if (window.innerWidth > 1024) {
-          sidebar.classList.add('expandido');
-        }
+        layout.classList.add('sidebar-expandido');
       });
 
-      // Contraer al retirar el mouse (Escritorio)
       sidebar.addEventListener('mouseleave', () => {
-        if (window.innerWidth > 1024) {
-          sidebar.classList.remove('expandido');
-        }
-      });
-
-      // Expandir al hacer clic o interactuar directamente (Escritorio/Tablet)
-      sidebar.addEventListener('click', () => {
-        if (window.innerWidth > 1024) {
-          sidebar.classList.add('expandido');
-        }
+        layout.classList.remove('sidebar-expandido');
       });
     }
-
-    // Contraer sidebar al hacer clic en cualquier otra parte de la pantalla
-    document.addEventListener('click', (e) => {
-      if (sidebar && !sidebar.contains(e.target) && sidebar.classList.contains('expandido')) {
-        sidebar.classList.remove('expandido');
-      }
-    });
 
     // Cerrar sesión (Modal Premium)
     const modalLogout = document.getElementById('modal-confirm-logout');
@@ -156,23 +134,6 @@ const App = {
         }
       });
     }
-
-    // Botón menú móvil
-    document.getElementById('btn-menu-movil').addEventListener('click', () => {
-      this._toggleSidebar();
-    });
-
-    // Overlay sidebar
-    document.getElementById('sidebar-overlay').addEventListener('click', () => {
-      this._toggleSidebar(false);
-    });
-
-    // Cerrar sidebar con Escape en móvil
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        this._toggleSidebar(false);
-      }
-    });
   },
 
   /**
@@ -198,9 +159,6 @@ const App = {
       'inventario': 'Control de Inventario'
     };
     document.getElementById('titulo-pagina').textContent = titulos[seccion] || 'Dashboard';
-
-    // Cerrar sidebar en móvil
-    this._toggleSidebar(false);
 
     // Cargar contenido
     const contenedor = document.getElementById('contenido-area');
@@ -239,34 +197,30 @@ const App = {
     } catch (err) {
       console.error('Error al cargar sección:', err);
       contenedor.innerHTML = `
-        <div class="tabla-vacia">
-          <p style="color:var(--color-error);">Error al cargar la sección. Intente nuevamente.</p>
+        <div class="tabla-vacia" style="padding: 40px; text-align: center;">
+          <h3 style="color: var(--color-error); margin-bottom: 12px;">Error al cargar la sección</h3>
+          <p style="color: var(--color-texto-secundario); font-size: 0.9rem; margin-bottom: 20px;">${err.message}</p>
+          <pre style="background: #F1F5F9; padding: 15px; border-radius: 8px; font-size: 0.75rem; text-align: left; max-width: 100%; overflow-x: auto; color: #334155; font-family: monospace;">${err.stack || err}</pre>
         </div>
       `;
     }
   },
 
   /**
-   * Toggle sidebar (para móvil)
+   * Vincular hash routing (para botones atrás/adelante y bookmarks)
    */
-  _toggleSidebar(forzar) {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebar-overlay');
-
-    if (typeof forzar === 'boolean') {
-      sidebar.classList.toggle('abierto', forzar);
-      overlay.classList.toggle('visible', forzar);
-    } else {
-      sidebar.classList.toggle('abierto');
-      overlay.classList.toggle('visible');
-    }
+  _vincularHashRouting() {
+    window.addEventListener('hashchange', () => {
+      const seccion = window.location.hash.replace('#', '') || 'dashboard';
+      this._cargarSeccion(seccion);
+    });
   },
 
   /**
    * Navegación programática
    */
   navegar(seccion) {
-    this._cargarSeccion(seccion);
+    window.location.hash = seccion;
   }
 };
 

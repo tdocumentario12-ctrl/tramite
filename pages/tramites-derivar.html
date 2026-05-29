@@ -1,0 +1,86 @@
+<div class="tramite-card">
+  <form id="form-derivacion" autocomplete="off">
+    <section class="form-seccion">
+      <div class="seccion-titulo"><span class="seccion-numero">1</span><h3>Datos Generales del Documento</h3></div>
+      <div class="grid-4">
+        <div class="campo-grupo">
+          <label class="campo-label">Número de documento</label>
+          <input type="text" id="d-numero" class="campo-input" placeholder="Ej. 454-2026-US-HSJCH" required>
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-label">Tipo de documento</label>
+          <select id="d-tipo-doc" class="campo-input" required>
+            <option value="NOTA Nº" selected>Nota Nº</option>
+            <option value="OFICIO Nº">Oficio Nº</option>
+            <option value="CARTA Nº">Carta Nº</option>
+            <option value="MEMORANDUM Nº">Memorándum Nº</option>
+            <option value="SOLICITUD Nº">Solicitud Nº</option>
+            <option value="INFORME Nº">Informe Nº</option>
+          </select>
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-label">Fecha</label>
+          <input type="date" id="d-fecha-doc" class="campo-input" required>
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-label">Prioridad</label>
+          <select id="d-prioridad-doc" class="campo-input" required>
+            <option value="BAJA">Baja</option>
+            <option value="MEDIA" selected>Media</option>
+            <option value="ALTA">Alta</option>
+            <option value="URGENTE">Urgente</option>
+          </select>
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-label">Remitente</label>
+          <input type="text" id="d-remitente" class="campo-input" placeholder="Nombre o institución" required>
+        </div>
+      </div>
+      <div class="campo-grupo full" style="margin-top:15px;">
+        <label class="campo-label">Asunto</label>
+        <input type="text" id="d-asunto-doc" class="campo-input" placeholder="Ingrese el asunto" required>
+      </div>
+    </section>
+
+    <section class="form-seccion">
+      <div class="seccion-titulo"><span class="seccion-numero">2</span><h3>Datos de Derivación</h3></div>
+      <div class="grid-4">
+        <div class="campo-grupo">
+          <label class="campo-label">Área Destino</label>
+          <select id="d-area" class="campo-input" required>
+            <option value="" disabled selected>Seleccione el área</option>
+            {{AREAS_OPTIONS}}
+          </select>
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-label">Responsable</label>
+          <input type="text" id="d-responsable" class="campo-input" placeholder="Nombre del responsable" required>
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-label">Cargo del Responsable</label>
+          <input type="text" id="d-cargo-resp" class="campo-input" placeholder="Ej. Jefe de Unidad" required>
+        </div>
+        <div class="campo-grupo">
+          <label class="campo-label">Nuevo Estado</label>
+          <select id="d-estado" class="campo-input" required>
+            <option value="DERIVADO" selected>Derivado</option>
+            <option value="EN PROCESO">En Proceso</option>
+            <option value="FINALIZADO">Finalizado</option>
+          </select>
+        </div>
+      </div>
+      <div class="campo-grupo full" style="margin-top:20px;">
+        <label class="campo-label">Observaciones de Derivación</label>
+        <textarea id="d-observaciones" class="campo-input campo-textarea" placeholder="Ingrese observaciones..."></textarea>
+      </div>
+    </section>
+
+    <div class="form-acciones">
+      <button type="button" class="btn-cancelar" id="d-btn-cancelar">Cancelar</button>
+      <button type="submit" class="btn-guardar-tramite" id="d-btn-guardar">
+        <span>Registrar y Derivar</span>
+        <div class="spinner" id="d-btn-spinner" style="display:none; width:18px; height:18px;"></div>
+      </button>
+    </div>
+  </form>
+</div>

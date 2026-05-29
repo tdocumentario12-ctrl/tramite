@@ -1,0 +1,103 @@
+<div class="rep-container">
+  <div class="rep-cabecera">
+    <div class="cabecera-info-rep">
+      <h2 style="font-size: 1.75rem; font-weight: 800; color: #0F172A; margin: 0;">Reportes y Estadísticas Ejecutivas</h2>
+      <div class="rep-subtitulo">Analice el volumen de trámites documentarios, la distribución por áreas y los tiempos de respuesta del hospital.</div>
+    </div>
+    <button class="btn-exportar-rep" id="rep-btn-exportar">
+      <svg xmlns="http://www.w3.org/2000/svg" style="width:20px; height:20px;" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2z" />
+      </svg>
+      Exportar Resumen (CSV)
+    </button>
+  </div>
+
+  <div class="rep-filtros">
+    <div class="rep-filtros-grid">
+      <div class="campo-grupo">
+        <label class="campo-label" style="font-weight:600; margin-bottom: 6px;">Desde</label>
+        <input type="date" id="rep-desde" class="campo-input" style="margin:0;">
+      </div>
+      <div class="campo-grupo">
+        <label class="campo-label" style="font-weight:600; margin-bottom: 6px;">Hasta</label>
+        <input type="date" id="rep-hasta" class="campo-input" style="margin:0;">
+      </div>
+      <div class="campo-grupo">
+        <label class="campo-label" style="font-weight:600; margin-bottom: 6px;">Área Destino</label>
+        <select id="rep-area" class="campo-input" style="margin:0;">
+          <option value="">Todas las Áreas</option>
+        </select>
+      </div>
+      <div class="campo-grupo">
+        <label class="campo-label" style="font-weight:600; margin-bottom: 6px;">Tipo de Documento</label>
+        <select id="rep-tipo" class="campo-input" style="margin:0;">
+          <option value="">Todos los Tipos</option>
+          <option value="NOTA Nº">Nota Nº</option>
+          <option value="OFICIO Nº">Oficio Nº</option>
+          <option value="CARTA Nº">Carta Nº</option>
+          <option value="MEMORANDUM Nº">Memorándum Nº</option>
+          <option value="SOLICITUD Nº">Solicitud Nº</option>
+          <option value="INFORME Nº">Informe Nº</option>
+        </select>
+      </div>
+    </div>
+    <div class="rep-filtros-acciones">
+      <button class="btn-secundario" id="rep-btn-limpiar" style="margin:0; padding:10px 24px; font-weight:600;">Limpiar</button>
+      <button class="btn-primario" id="rep-btn-aplicar" style="margin:0; padding:10px 24px; font-weight:600;">Aplicar Filtros</button>
+    </div>
+  </div>
+
+  <div class="rep-stats-grid">
+    <div class="rep-card rep-total">
+      <div class="rep-card-icon">📁</div>
+      <div class="rep-card-info">
+        <span class="rep-card-valor" id="rep-val-total">0</span>
+        <span class="rep-card-label">Total Trámites</span>
+      </div>
+    </div>
+    <div class="rep-card rep-proceso">
+      <div class="rep-card-icon">⏳</div>
+      <div class="rep-card-info">
+        <span class="rep-card-valor" id="rep-val-proceso">0</span>
+        <span class="rep-card-label">En Proceso</span>
+      </div>
+    </div>
+    <div class="rep-card rep-atendido">
+      <div class="rep-card-icon">✅</div>
+      <div class="rep-card-info">
+        <span class="rep-card-valor" id="rep-val-atendidos">0</span>
+        <span class="rep-card-label">Finalizados</span>
+      </div>
+    </div>
+    <div class="rep-card rep-eficiencia">
+      <div class="rep-card-icon">🎯</div>
+      <div class="rep-card-info">
+        <span class="rep-card-valor" id="rep-val-eficiencia">0%</span>
+        <span class="rep-card-label">Tasa de Cierre</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="rep-graficos-container">
+    <div class="grafico-card">
+      <h3 class="grafico-titulo">
+        <span>📊</span> Distribución por Estado de Trámite
+      </h3>
+      <div id="grafico-estados"></div>
+    </div>
+
+    <div class="grafico-card">
+      <h3 class="grafico-titulo">
+        <span>📄</span> Volumen por Tipo de Documento
+      </h3>
+      <div id="grafico-tipos"></div>
+    </div>
+
+    <div class="grafico-card" style="grid-column: span 2;">
+      <h3 class="grafico-titulo">
+        <span>🏢</span> Trámites por Área de Destino
+      </h3>
+      <div id="grafico-areas" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;"></div>
+    </div>
+  </div>
+</div>

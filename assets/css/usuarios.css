@@ -32,7 +32,7 @@
 
 .btn-nuevo-usuario {
   background: var(--color-primario);
-  color: white;
+  color: var(--color-blanco);
   border-radius: var(--radio-lg);
   padding: 8px 22px;
   display: inline-flex;
@@ -57,7 +57,7 @@
 
 /* ── Tabla MD Style ── */
 .tabla-contenedor {
-  background: white;
+  background: var(--color-fondo-card);
   border-radius: 24px;
   border: 1px solid var(--color-borde);
   overflow: hidden;
@@ -65,18 +65,18 @@
 }
 
 .tabla-usuarios th {
-  background: #E0F2FE !important; /* Fondo Celeste pastel */
+  background: var(--color-primario-light) !important;
   padding: 16px 20px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #0369A1 !important; /* Texto en azul para contraste */
-  border-bottom: 2px solid #7DD3FC !important; /* Contorno Celeste pastel */
+  color: var(--color-primario-hover) !important;
+  border-bottom: 2px solid var(--color-primario-light) !important;
 }
 
 .tabla-usuarios td {
   padding: 16px 20px;
-  border-bottom: 1px solid #F1F5F9;
+  border-bottom: 1px solid var(--color-fondo-alt);
   vertical-align: middle;
 }
 
@@ -111,7 +111,7 @@
 }
 
 .md-modal {
-  background: white;
+  background: var(--color-blanco);
   border-radius: 28px;
   width: 100%;
   max-width: 560px;
@@ -179,7 +179,7 @@
 }
 
 .btn-icon-md:hover {
-  background: #F1F5F9;
+  background: var(--color-fondo-alt);
   color: var(--color-texto);
 }
 
@@ -226,7 +226,7 @@
   left: 12px;
   top: 22px;
   padding: 0 4px;
-  background: white;
+  background: var(--color-blanco);
   color: var(--color-texto-secundario);
   font-size: 1rem;
   transition: all 0.2s;
@@ -270,7 +270,7 @@ select.md-input {
   display: flex;
   justify-content: flex-end;
   gap: 12px;
-  background: #F8FAFC;
+  background: var(--color-fondo);
 }
 
 .btn-text-md {
@@ -292,7 +292,7 @@ select.md-input {
   border-radius: 100px;
   font-weight: 600;
   font-size: 0.9rem;
-  color: white;
+  color: var(--color-blanco);
   background: var(--color-primario);
   box-shadow: var(--sombra-sm);
   transition: all 0.2s;
@@ -308,7 +308,7 @@ select.md-input {
 }
 
 .btn-filled-md:disabled {
-  background: #CBD5E1;
+  background: var(--color-borde-hover);
   cursor: not-allowed;
 }
 
@@ -321,7 +321,7 @@ select.md-input {
   text-transform: uppercase;
 }
 
-.badge-rol.administrador { background: #F0F9FF; color: #0369A1; }
+.badge-rol.administrador { background: var(--color-primario-ultra-light); color: var(--color-primario-hover); }
 .badge-rol.operador { background: #FFF7ED; color: #9A3412; }
 
 .badge-estado {
@@ -349,7 +349,7 @@ select.md-input {
   height: 32px;
   border-radius: 8px;
   border: 1px solid var(--color-borde);
-  background: white;
+  background: var(--color-blanco);
   color: var(--color-texto-secundario);
   transition: all 0.2s;
   display: inline-flex;
@@ -371,7 +371,7 @@ select.md-input {
 }
 
 .btn-accion.peligro:hover {
-  background: #FEF2F2;
+  background: var(--color-error-light);
   color: var(--color-error);
   border-color: var(--color-error);
 }
