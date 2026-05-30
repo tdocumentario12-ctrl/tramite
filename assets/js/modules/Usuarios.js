@@ -2,6 +2,7 @@ const Usuarios = {
   _perfil: null,
   _contenedor: null,
   _editandoId: null,
+  _onKeyDown: null,
 
   async renderizar(contenedor, perfil) {
     this._perfil = perfil;
@@ -66,9 +67,9 @@ const Usuarios = {
       if (e.target === e.currentTarget) cerrar();
     });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') cerrar();
-    });
+    if (this._onKeyDown) document.removeEventListener('keydown', this._onKeyDown);
+    this._onKeyDown = (e) => { if (e.key === 'Escape') cerrar(); };
+    document.addEventListener('keydown', this._onKeyDown);
   },
 
   async _cargarUsuarios() {
@@ -136,15 +137,21 @@ const Usuarios = {
   },
 
   _limpiarModal() {
-    document.getElementById('campo-id').value = '';
-    document.getElementById('campo-nombre').value = '';
-    document.getElementById('campo-gmail').value = '';
-    document.getElementById('campo-usuario').value = '';
-    document.getElementById('campo-password').value = '';
-    document.getElementById('campo-rol').value = 'operador';
-    document.getElementById('campo-cargo').value = '';
-    document.getElementById('campo-firma').value = '';
-    const preview = document.getElementById('firma-preview');
+    const $ = id => document.getElementById(id);
+    const ids = ['campo-id','campo-nombre','campo-gmail','campo-usuario','campo-password','campo-rol','campo-cargo','campo-firma','firma-preview'];
+    const faltan = ids.filter(id => !$(id));
+    if (faltan.length) {
+      console.warn('[Usuarios] Campos del modal no encontrados en el DOM:', faltan);
+    }
+    if ($('campo-id')) $('campo-id').value = '';
+    if ($('campo-nombre')) $('campo-nombre').value = '';
+    if ($('campo-gmail')) $('campo-gmail').value = '';
+    if ($('campo-usuario')) $('campo-usuario').value = '';
+    if ($('campo-password')) $('campo-password').value = '';
+    if ($('campo-rol')) $('campo-rol').value = 'operador';
+    if ($('campo-cargo')) $('campo-cargo').value = '';
+    if ($('campo-firma')) $('campo-firma').value = '';
+    const preview = $('firma-preview');
     if (preview) { preview.src = ''; preview.style.display = 'none'; }
   },
 
@@ -233,13 +240,10 @@ const Usuarios = {
         if (error) throw error;
         Toast.exito('Usuario actualizado correctamente.');
       } else {
-        const { data, error } = await clienteSupabase.rpc('crear_usuario_sistema', {
-          p_email: gmail,
-          p_password: password,
-          p_nombre_completo: nombre,
-          p_nombre_usuario: usuario,
-          p_rol: rol
-        });
+        const rpcArgs = { p_email: gmail, p_password: password, p_nombre_completo: nombre, p_nombre_usuario: usuario, p_rol: rol };
+        console.log('[Usuarios] Llamando RPC crear_usuario_sistema con:', rpcArgs);
+        const { data, error } = await clienteSupabase.rpc('crear_usuario_sistema', rpcArgs);
+        console.log('[Usuarios] RPC respuesta:', { data, error });
 
         if (error) throw error;
 

@@ -10,20 +10,8 @@ const TemplateLoader = {
       if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
       const text = await resp.text();
 
-      // Parsear como documento HTML completo para que el navegador
-      // estructure correctamente incluso con scripts inyectados
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(text, 'text/html');
-
-      // Extraer solo el body (los partials no tienen <html>/<body> propios)
-      let html = doc.body.innerHTML;
-
-      // Eliminar cualquier script o comentario residual que haya quedado
-      html = html.replace(/<script[\s\S]*?<\/script>\s*/gi, '');
-      html = html.replace(/<!--[\s\S]*?-->\s*/g, '');
-
-      this._cache[nombre] = html;
-      return html;
+      this._cache[nombre] = text;
+      return text;
     } catch (err) {
       console.error(`[TemplateLoader] Error al cargar "${nombre}":`, err);
       return '';
